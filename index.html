@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math Blitz</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #F5A623;
+  --gold-light: #FDE68A;
+  --blue: #3B82F6;
+  --blue-dark: #1D4ED8;
+  --green: #22C55E;
+  --green-dark: #15803D;
+  --red: #EF4444;
+  --purple: #8B5CF6;
+  --bg: #F0F4FF;
+  --card: #FFFFFF;
+  --text: #1E293B;
+  --muted: #64748B;
+  --border: #E2E8F0;
+  --radius: 16px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.14);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* ── Screens ── */
+.screen { display: none; min-height: 100vh; }
+.screen.active { display: flex; flex-direction: column; }
+
+/* ── Home Screen ── */
+#home {
+  background: linear-gradient(160deg, #1E3A8A 0%, #3B82F6 60%, #60A5FA 100%);
+  padding: 2rem 1rem 4rem;
+  align-items: center;
+}
+
+.home-hero {
+  text-align: center;
+  padding: 2rem 0 1.5rem;
+  color: white;
+}
+
+.home-hero h1 {
+  font-family: 'Nunito', sans-serif;
+  font-size: clamp(2.8rem, 10vw, 5rem);
+  font-weight: 900;
+  letter-spacing: -1px;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.home-hero h1 span { color: var(--gold-light); }
+
+.home-hero p {
+  font-size: 1.1rem;
+  opacity: 0.85;
+  margin-bottom: 0.25rem;
+}
+
+.op-pills {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 1.25rem 0 2rem;
+}
+
+.op-pill {
+  background: rgba(255,255,255,0.2);
+  border: 1.5px solid rgba(255,255,255,0.4);
+  color: white;
+  border-radius: 99px;
+  padding: 6px 18px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.skill-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  width: 100%;
+  max-width: 700px;
+}
+
+.skill-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: transform 0.15s, box-shadow 0.15s;
+  border: 2px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.skill-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--blue);
+}
+
+.skill-card:active { transform: scale(0.98); }
+
+.skill-icon {
+  width: 52px; height: 52px;
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.skill-info { flex: 1; min-width: 0; }
+.skill-name {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  margin-bottom: 2px;
+}
+.skill-desc { font-size: 0.8rem; color: var(--muted); }
+
+.skill-stars {
+  display: flex;
+  gap: 2px;
+  margin-top: 6px;
+}
+
+.star { font-size: 16px; opacity: 0.25; transition: opacity 0.2s; }
+.star.earned { opacity: 1; }
+
+.skill-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+
+/* ── Skill colors ── */
+.add    { background: #DBEAFE; color: #1E40AF; }
+.sub    { background: #FCE7F3; color: #9D174D; }
+.mul    { background: #D1FAE5; color: #065F46; }
+.div    { background: #FEF3C7; color: #92400E; }
+.mix    { background: #EDE9FE; color: #4C1D95; }
+
+/* ── Game Screen ── */
+#game {
+  background: var(--bg);
+  padding: 0;
+}
+
+.game-header {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.4rem;
+  color: var(--muted);
+  line-height: 1;
+  padding: 4px;
+  border-radius: 8px;
+  transition: background 0.1s;
+}
+.back-btn:hover { background: var(--bg); }
+
+.game-header-info { flex: 1; }
+.game-title {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+.game-subtitle { font-size: 0.8rem; color: var(--muted); }
+
+.game-stats {
+  display: flex;
+  gap: 8px;
+}
+
+.gstat {
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 6px 12px;
+  text-align: center;
+  min-width: 52px;
+}
+.gstat-val {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--text);
+}
+.gstat-lbl { font-size: 10px; color: var(--muted); }
+
+.game-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 1rem 1rem;
+  max-width: 480px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Progress bar */
+.progress-wrap {
+  width: 100%;
+  height: 8px;
+  background: var(--border);
+  border-radius: 99px;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+#progress-bar {
+  height: 100%;
+  border-radius: 99px;
+  background: var(--blue);
+  transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* Timer */
+.timer-ring-wrap {
+  position: relative;
+  width: 64px; height: 64px;
+  margin-bottom: 1.25rem;
+}
+.timer-ring-wrap svg { transform: rotate(-90deg); }
+#timer-ring-track { stroke: var(--border); }
+#timer-ring-fill {
+  stroke: var(--blue);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.1s linear, stroke 0.3s;
+}
+#timer-num {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 1.3rem;
+  color: var(--text);
+}
+
+/* Flash card */
+.flashcard {
+  background: white;
+  border-radius: 24px;
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  transition: transform 0.12s, border-color 0.2s;
+  border: 3px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.flashcard.shake {
+  animation: shake 0.35s ease;
+}
+.flashcard.pop {
+  animation: pop 0.25s ease;
+}
+.flashcard.correct-flash { border-color: var(--green); }
+.flashcard.wrong-flash   { border-color: var(--red); }
+
+@keyframes shake {
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-8px)}
+  40%{transform:translateX(8px)}
+  60%{transform:translateX(-6px)}
+  80%{transform:translateX(6px)}
+}
+@keyframes pop {
+  0%{transform:scale(1)}
+  50%{transform:scale(1.04)}
+  100%{transform:scale(1)}
+}
+
+.q-number {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+}
+
+.q-text {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: clamp(2.5rem, 12vw, 4rem);
+  color: var(--text);
+  margin-bottom: 0.5rem;
+  letter-spacing: -1px;
+}
+
+.q-answer-display {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 1.8rem;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.q-answer-display.correct { color: var(--green-dark); }
+.q-answer-display.wrong   { color: var(--red); }
+
+/* Input */
+.answer-row {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+#ans-input {
+  flex: 1;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 2rem;
+  text-align: center;
+  padding: 0.75rem;
+  border: 2.5px solid var(--border);
+  border-radius: 14px;
+  outline: none;
+  background: white;
+  color: var(--text);
+  -moz-appearance: textfield;
+  appearance: textfield;
+  transition: border-color 0.15s;
+}
+#ans-input::-webkit-inner-spin-button,
+#ans-input::-webkit-outer-spin-button { display: none; }
+#ans-input:focus { border-color: var(--blue); }
+
+#go-btn {
+  background: var(--blue);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 0.75rem 1.5rem;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+#go-btn:hover { background: var(--blue-dark); }
+#go-btn:active { transform: scale(0.96); }
+
+/* Numpad */
+.numpad {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  width: 100%;
+}
+
+.np {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 0;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+  cursor: pointer;
+  text-align: center;
+  color: var(--text);
+  transition: background 0.1s, transform 0.08s;
+  user-select: none;
+}
+.np:hover  { background: var(--bg); }
+.np:active { transform: scale(0.94); background: var(--border); }
+.np.del    { color: var(--muted); font-size: 1.1rem; }
+.np.neg    { color: var(--muted); }
+
+/* Dot trail */
+.dot-trail {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+.trail-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: background 0.2s;
+}
+.trail-dot.c { background: var(--green); }
+.trail-dot.w { background: var(--red); }
+.trail-dot.upcoming { background: var(--border); opacity: 0.4; }
+
+/* ── Results Screen ── */
+#results {
+  background: var(--bg);
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.results-card {
+  background: white;
+  border-radius: 28px;
+  box-shadow: var(--shadow-lg);
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+}
+
+.results-skill-name {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 0.25rem;
+}
+
+.results-title {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 1.8rem;
+  margin-bottom: 0.25rem;
+}
+
+.stars-display {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 1.25rem 0;
+}
+
+.big-star {
+  font-size: 3.5rem;
+  filter: grayscale(1) opacity(0.25);
+  transition: filter 0.4s, transform 0.4s;
+  transform: scale(0.8);
+}
+.big-star.lit {
+  filter: none;
+  transform: scale(1.05);
+}
+.big-star.lit.bounce {
+  animation: starBounce 0.5s cubic-bezier(0.36,0.07,0.19,0.97) forwards;
+}
+@keyframes starBounce {
+  0%  { transform: scale(0.5); }
+  60% { transform: scale(1.2); }
+  80% { transform: scale(0.95); }
+  100%{ transform: scale(1.05); }
+}
+
+.results-score-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin: 1.25rem 0;
+}
+
+.res-stat {
+  background: var(--bg);
+  border-radius: 12px;
+  padding: 0.75rem 0.5rem;
+}
+.res-stat-val {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: var(--text);
+}
+.res-stat-lbl { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+.feedback-msg {
+  font-size: 1rem;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.results-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn-primary {
+  background: var(--blue);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 1rem;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  width: 100%;
+}
+.btn-primary:hover   { background: var(--blue-dark); }
+.btn-primary:active  { transform: scale(0.98); }
+
+.btn-secondary {
+  background: var(--bg);
+  color: var(--text);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 0.9rem;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.15s;
+  width: 100%;
+}
+.btn-secondary:hover { background: var(--border); }
+
+/* ── Responsive ── */
+@media (max-width: 400px) {
+  .game-stats { display: none; }
+  .np { padding: 12px 0; font-size: 1.1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ HOME SCREEN ══ -->
+<div id="home" class="screen active">
+  <div class="home-hero">
+    <h1>Math<span>Blitz</span> ⚡</h1>
+    <p>Pick a skill. Beat the clock. Earn stars.</p>
+    <div class="op-pills">
+      <span class="op-pill">+ Addition</span>
+      <span class="op-pill">− Subtraction</span>
+      <span class="op-pill">× Multiplication</span>
+      <span class="op-pill">÷ Division</span>
+    </div>
+  </div>
+  <div class="skill-grid" id="skill-grid"></div>
+</div>
+
+<!-- ══ GAME SCREEN ══ -->
+<div id="game" class="screen">
+  <div class="game-header">
+    <button class="back-btn" onclick="goHome()">←</button>
+    <div class="game-header-info">
+      <div class="game-title" id="game-title">Addition: Level 1</div>
+      <div class="game-subtitle" id="game-subtitle">10 questions</div>
+    </div>
+    <div class="game-stats">
+      <div class="gstat">
+        <div class="gstat-val" id="gs-score">0</div>
+        <div class="gstat-lbl">score</div>
+      </div>
+      <div class="gstat">
+        <div class="gstat-val" id="gs-streak">0</div>
+        <div class="gstat-lbl">streak</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="game-body">
+    <div class="progress-wrap">
+      <div id="progress-bar" style="width:0%"></div>
+    </div>
+
+    <div class="timer-ring-wrap">
+      <svg width="64" height="64" viewBox="0 0 64 64">
+        <circle id="timer-ring-track" cx="32" cy="32" r="28" fill="none" stroke-width="5"/>
+        <circle id="timer-ring-fill"  cx="32" cy="32" r="28" fill="none" stroke-width="5"
+          stroke-dasharray="176" stroke-dashoffset="0"/>
+      </svg>
+      <div id="timer-num">10</div>
+    </div>
+
+    <div class="flashcard" id="flashcard">
+      <div class="q-number" id="q-number">Question 1 of 10</div>
+      <div class="q-text" id="q-text">? + ? = ?</div>
+      <div class="q-answer-display" id="q-reveal"></div>
+    </div>
+
+    <div class="answer-row">
+      <input id="ans-input" type="number" inputmode="numeric" placeholder="?" autocomplete="off">
+      <button id="go-btn" onclick="submitAnswer()">Go</button>
+    </div>
+
+    <div class="numpad" id="numpad">
+      <button class="np" data-n="7">7</button>
+      <button class="np" data-n="8">8</button>
+      <button class="np" data-n="9">9</button>
+      <button class="np del" data-n="del">⌫</button>
+      <button class="np" data-n="4">4</button>
+      <button class="np" data-n="5">5</button>
+      <button class="np" data-n="6">6</button>
+      <button class="np neg" data-n="-">−</button>
+      <button class="np" data-n="1">1</button>
+      <button class="np" data-n="2">2</button>
+      <button class="np" data-n="3">3</button>
+      <button class="np" data-n="0">0</button>
+    </div>
+
+    <div class="dot-trail" id="dot-trail"></div>
+  </div>
+</div>
+
+<!-- ══ RESULTS SCREEN ══ -->
+<div id="results" class="screen">
+  <div class="results-card">
+    <div class="results-skill-name" id="res-skill-name"></div>
+    <div class="results-title" id="res-title">Nice work!</div>
+    <div class="stars-display">
+      <div class="big-star" id="star1">⭐</div>
+      <div class="big-star" id="star2">⭐</div>
+      <div class="big-star" id="star3">⭐</div>
+    </div>
+    <div class="results-score-row">
+      <div class="res-stat">
+        <div class="res-stat-val" id="res-correct">—</div>
+        <div class="res-stat-lbl">correct</div>
+      </div>
+      <div class="res-stat">
+        <div class="res-stat-val" id="res-acc">—</div>
+        <div class="res-stat-lbl">accuracy</div>
+      </div>
+      <div class="res-stat">
+        <div class="res-stat-val" id="res-avg">—</div>
+        <div class="res-stat-lbl">avg time</div>
+      </div>
+    </div>
+    <div class="feedback-msg" id="res-feedback"></div>
+    <div class="results-btns">
+      <button class="btn-primary" onclick="replaySkill()">Try again ↺</button>
+      <button class="btn-secondary" onclick="goHome()">Choose a skill</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══ Skill Definitions ══
+const SKILLS = [
+  // Addition
+  { id:'add1', name:'Addition: Basics',     op:'+', min:1,  max:10,  desc:'Single digits, no carrying',   color:'add', icon:'1+1', qs:10, time:12 },
+  { id:'add2', name:'Addition: Level 2',    op:'+', min:5,  max:25,  desc:'Two-digit numbers',             color:'add', icon:'12+', qs:10, time:10 },
+  { id:'add3', name:'Addition: Level 3',    op:'+', min:10, max:99,  desc:'Larger numbers, think fast!',   color:'add', icon:'99+', qs:12, time:10 },
+  // Subtraction
+  { id:'sub1', name:'Subtraction: Basics',  op:'−', min:1,  max:10,  desc:'Stay positive, no negatives',  color:'sub', icon:'9−3', qs:10, time:12 },
+  { id:'sub2', name:'Subtraction: Level 2', op:'−', min:5,  max:25,  desc:'Two-digit differences',         color:'sub', icon:'25−', qs:10, time:10 },
+  { id:'sub3', name:'Subtraction: Level 3', op:'−', min:10, max:99,  desc:'Big numbers, stay sharp!',      color:'sub', icon:'99−', qs:12, time:10 },
+  // Multiplication
+  { id:'mul1', name:'Times Tables: ×2–×5',  op:'×', min:2,  max:5,   desc:'Learn your first tables',       color:'mul', icon:'×2–5', qs:10, time:12 },
+  { id:'mul2', name:'Times Tables: ×6–×9',  op:'×', min:6,  max:9,   desc:'The trickier ones',             color:'mul', icon:'×6–9', qs:10, time:10 },
+  { id:'mul3', name:'Times Tables: ×10–×12',op:'×', min:10, max:12,  desc:'Big table energy',              color:'mul', icon:'×12',  qs:12, time:10 },
+  // Division
+  { id:'div1', name:'Division: Basics',     op:'÷', min:1,  max:5,   desc:'Simple facts, whole answers',   color:'div', icon:'÷2–5', qs:10, time:12 },
+  { id:'div2', name:'Division: Level 2',    op:'÷', min:6,  max:9,   desc:'Dividing by 6, 7, 8, 9',       color:'div', icon:'÷6–9', qs:10, time:10 },
+  { id:'div3', name:'Division: Level 3',    op:'÷', min:10, max:12,  desc:'Dividing by 10, 11, 12',        color:'div', icon:'÷12',  qs:12, time:10 },
+  // Mixed
+  { id:'mix1', name:'Mixed: All Operations',op:'*', min:1,  max:10,  desc:'Addition, sub, mult, div',      color:'mix', icon:'±×÷', qs:15, time:10 },
+  { id:'mix2', name:'Mixed: Expert Mode',   op:'*', min:5,  max:12,  desc:'Everything — go fast!',         color:'mix', icon:'⚡',  qs:20, time:8  },
+];
+
+const COLOR_MAP = {
+  add: { bg:'#DBEAFE', text:'#1E40AF', border:'#93C5FD' },
+  sub: { bg:'#FCE7F3', text:'#9D174D', border:'#F9A8D4' },
+  mul: { bg:'#D1FAE5', text:'#065F46', border:'#6EE7B7' },
+  div: { bg:'#FEF3C7', text:'#92400E', border:'#FCD34D' },
+  mix: { bg:'#EDE9FE', text:'#4C1D95', border:'#C4B5FD' },
+};
+
+// ══ State ══
+let currentSkill = null;
+let questions = [];
+let qIndex = 0;
+let score = 0;
+let streak = 0;
+let correct = 0;
+let answered = false;
+let times = [];
+let timerInterval = null;
+let qStartTime = null;
+let dotHistory = [];
+
+// ══ Storage ══
+function getProgress() {
+  try { return JSON.parse(localStorage.getItem('mathblitz_progress') || '{}'); }
+  catch(e) { return {}; }
+}
+function saveProgress(skillId, stars) {
+  const p = getProgress();
+  p[skillId] = Math.max(p[skillId] || 0, stars);
+  localStorage.setItem('mathblitz_progress', JSON.stringify(p));
+}
+
+// ══ Home Screen ══
+function renderHome() {
+  const progress = getProgress();
+  const grid = document.getElementById('skill-grid');
+  grid.innerHTML = '';
+  SKILLS.forEach(skill => {
+    const earned = progress[skill.id] || 0;
+    const c = COLOR_MAP[skill.color];
+    const card = document.createElement('div');
+    card.className = 'skill-card';
+    card.style.borderLeftColor = c.border;
+    card.innerHTML = `
+      <div class="skill-icon" style="background:${c.bg};color:${c.text}">${skill.icon}</div>
+      <div class="skill-info">
+        <div class="skill-name">${skill.name}</div>
+        <div class="skill-desc">${skill.desc} · ${skill.qs} Qs · ${skill.time}s each</div>
+        <div class="skill-stars">
+          <span class="star${earned>=1?' earned':''}">⭐</span>
+          <span class="star${earned>=2?' earned':''}">⭐</span>
+          <span class="star${earned>=3?' earned':''}">⭐</span>
+        </div>
+      </div>
+    `;
+    card.addEventListener('click', () => startSkill(skill));
+    grid.appendChild(card);
+  });
+}
+
+// ══ Question Generator ══
+function rand(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a; }
+
+function makeQuestion(skill) {
+  let op = skill.op;
+  if (op === '*') {
+    const ops = ['+','−','×','÷'];
+    op = ops[rand(0, 3)];
+  }
+  let a, b, answer;
+  const mn = skill.min, mx = skill.max;
+
+  if (op === '+') {
+    a = rand(mn, mx); b = rand(mn, mx); answer = a + b;
+  } else if (op === '−') {
+    a = rand(mn, mx); b = rand(mn, a); answer = a - b;
+  } else if (op === '×') {
+    a = rand(mn, mx); b = rand(1, 12); answer = a * b;
+  } else { // ÷
+    b = rand(mn, mx); answer = rand(1, 12); a = b * answer;
+  }
+  return { text: `${a} ${op} ${b}`, answer };
+}
+
+function buildQuestions(skill) {
+  return Array.from({length: skill.qs}, () => makeQuestion(skill));
+}
+
+// ══ Start Skill ══
+function startSkill(skill) {
+  currentSkill = skill;
+  questions = buildQuestions(skill);
+  qIndex = 0; score = 0; streak = 0; correct = 0;
+  times = []; dotHistory = [];
+  answered = false;
+
+  document.getElementById('game-title').textContent = skill.name;
+  document.getElementById('game-subtitle').textContent = `${skill.qs} questions · ${skill.time}s each`;
+
+  showScreen('game');
+  renderDotTrail();
+  nextQuestion();
+}
+
+function replaySkill() { startSkill(currentSkill); }
+
+// ══ Game Loop ══
+function nextQuestion() {
+  if (qIndex >= questions.length) { showResults(); return; }
+  answered = false;
+
+  const q = questions[qIndex];
+  document.getElementById('q-number').textContent = `Question ${qIndex+1} of ${currentSkill.qs}`;
+  document.getElementById('q-text').textContent = q.text + ' =';
+  document.getElementById('q-reveal').textContent = '';
+  document.getElementById('q-reveal').className = 'q-answer-display';
+
+  const fc = document.getElementById('flashcard');
+  fc.className = 'flashcard';
+  document.getElementById('ans-input').value = '';
+  document.getElementById('ans-input').focus();
+
+  // Progress bar
+  document.getElementById('progress-bar').style.width =
+    (qIndex / currentSkill.qs * 100) + '%';
+
+  updateGameStats();
+  startTimer();
+}
+
+function startTimer() {
+  clearInterval(timerInterval);
+  const limit = currentSkill.time;
+  const circumference = 176;
+  qStartTime = Date.now();
+
+  timerInterval = setInterval(() => {
+    const elapsed = (Date.now() - qStartTime) / 1000;
+    const pct = Math.max(0, 1 - elapsed / limit);
+    const offset = circumference * (1 - pct);
+
+    document.getElementById('timer-ring-fill').style.strokeDashoffset = offset;
+    document.getElementById('timer-num').textContent = Math.ceil(Math.max(0, limit - elapsed));
+
+    const ring = document.getElementById('timer-ring-fill');
+    if (pct < 0.3)       ring.style.stroke = '#EF4444';
+    else if (pct < 0.6)  ring.style.stroke = '#F5A623';
+    else                 ring.style.stroke = '#3B82F6';
+
+    if (elapsed >= limit && !answered) {
+      clearInterval(timerInterval);
+      resolveAnswer(false, true);
+    }
+  }, 80);
+}
+
+function submitAnswer() {
+  if (answered) return;
+  const val = parseInt(document.getElementById('ans-input').value, 10);
+  if (isNaN(val)) { document.getElementById('ans-input').focus(); return; }
+  resolveAnswer(val === questions[qIndex].answer);
+}
+
+function resolveAnswer(isCorrect, timedOut = false) {
+  if (answered) return;
+  answered = true;
+  clearInterval(timerInterval);
+
+  const elapsed = (Date.now() - qStartTime) / 1000;
+  times.push(elapsed);
+
+  const fc = document.getElementById('flashcard');
+  const reveal = document.getElementById('q-reveal');
+
+  dotHistory.push(isCorrect ? 'c' : 'w');
+  renderDotTrail();
+
+  if (isCorrect) {
+    correct++;
+    streak++;
+    const speedBonus = Math.max(0, Math.round((currentSkill.time - elapsed) * 8));
+    score += 100 + speedBonus;
+    fc.classList.add('correct-flash', 'pop');
+    reveal.textContent = '✓';
+    reveal.className = 'q-answer-display correct';
+  } else {
+    streak = 0;
+    fc.classList.add('wrong-flash', 'shake');
+    reveal.textContent = timedOut
+      ? `⏱ ${questions[qIndex].answer}`
+      : `✗  ${questions[qIndex].answer}`;
+    reveal.className = 'q-answer-display wrong';
+  }
+
+  updateGameStats();
+
+  // Zero out timer ring
+  document.getElementById('timer-ring-fill').style.strokeDashoffset = 176;
+  document.getElementById('timer-num').textContent = '';
+
+  qIndex++;
+  setTimeout(nextQuestion, isCorrect ? 700 : 1500);
+}
+
+function updateGameStats() {
+  document.getElementById('gs-score').textContent = score;
+  document.getElementById('gs-streak').textContent = streak;
+}
+
+function renderDotTrail() {
+  const trail = document.getElementById('dot-trail');
+  trail.innerHTML = '';
+  const total = currentSkill ? currentSkill.qs : 10;
+  for (let i = 0; i < total; i++) {
+    const d = document.createElement('div');
+    if (i < dotHistory.length) {
+      d.className = 'trail-dot ' + dotHistory[i];
+    } else if (i === dotHistory.length) {
+      d.className = 'trail-dot';
+      d.style.background = '#3B82F6';
+    } else {
+      d.className = 'trail-dot upcoming';
+    }
+    trail.appendChild(d);
+  }
+}
+
+// ══ Results ══
+function calcStars(acc, avgTime, timeLimit) {
+  if (acc >= 0.9 && avgTime <= timeLimit * 0.6) return 3;
+  if (acc >= 0.7) return 2;
+  if (acc >= 0.5) return 1;
+  return 0;
+}
+
+const FEEDBACK = [
+  { stars:3, msgs:['Perfect — you crushed it! 🔥','Blazing fast and accurate! ⚡','Three stars! You're a math wizard! 🧙'] },
+  { stars:2, msgs:['Solid work! A little more speed and you\'ll get 3 stars.','Great accuracy! Try going faster for that third star. 💪','Two stars — keep practicing!'] },
+  { stars:1, msgs:['Good start! Keep practicing and you\'ll improve fast.','One star — you\'re getting there. Try again!','Practice makes perfect. Give it another go!'] },
+  { stars:0, msgs:['Don\'t give up! Every expert started as a beginner.','Try again — you\'ll do better next time!','Review the material and come back stronger. 💪'] },
+];
+
+function showResults() {
+  clearInterval(timerInterval);
+  const total = currentSkill.qs;
+  const acc = correct / total;
+  const avgTime = times.length ? times.reduce((a,b)=>a+b,0)/times.length : 0;
+  const stars = calcStars(acc, avgTime, currentSkill.time);
+
+  saveProgress(currentSkill.id, stars);
+  renderHome();
+
+  document.getElementById('res-skill-name').textContent = currentSkill.name;
+  const titles = ['Keep trying!','Good effort!','Well done!','Outstanding!'];
+  document.getElementById('res-title').textContent = titles[stars] || 'Done!';
+  document.getElementById('res-correct').textContent = `${correct}/${total}`;
+  document.getElementById('res-acc').textContent = Math.round(acc*100) + '%';
+  document.getElementById('res-avg').textContent = avgTime.toFixed(1) + 's';
+
+  const pool = FEEDBACK.find(f => f.stars === stars);
+  const msg = pool ? pool.msgs[Math.floor(Math.random()*pool.msgs.length)] : '';
+  document.getElementById('res-feedback').textContent = msg;
+
+  // Reset stars
+  [1,2,3].forEach(n => {
+    const el = document.getElementById('star'+n);
+    el.classList.remove('lit','bounce');
+  });
+
+  showScreen('results');
+  document.getElementById('progress-bar').style.width = '100%';
+
+  // Animate stars in sequence
+  for (let i = 1; i <= 3; i++) {
+    if (i <= stars) {
+      setTimeout(() => {
+        const el = document.getElementById('star'+i);
+        el.classList.add('lit','bounce');
+      }, 300 + (i-1) * 350);
+    }
+  }
+}
+
+// ══ Navigation ══
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function goHome() {
+  clearInterval(timerInterval);
+  showScreen('home');
+}
+
+// ══ Numpad ══
+document.getElementById('numpad').addEventListener('click', e => {
+  const btn = e.target.closest('.np');
+  if (!btn) return;
+  const n = btn.dataset.n;
+  const inp = document.getElementById('ans-input');
+  if (n === 'del') {
+    inp.value = inp.value.slice(0, -1);
+  } else if (n === '-') {
+    if (!inp.value.startsWith('-')) inp.value = '-' + inp.value;
+  } else {
+    inp.value += n;
+  }
+  inp.focus();
+});
+
+// ══ Keyboard ══
+document.addEventListener('keydown', e => {
+  if (document.getElementById('game').classList.contains('active')) {
+    if (e.key === 'Enter') submitAnswer();
+  }
+});
+
+// ══ Init ══
+renderHome();
+</script>
+</body>
+</html>

@@ -7,12 +7,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root {
-  --gold: #F5A623;
   --blue: #3B82F6;
   --blue-dark: #1D4ED8;
   --green: #22C55E;
   --green-dark: #15803D;
   --red: #EF4444;
+  --amber: #F59E0B;
   --bg: #F0F4FF;
   --card: #FFFFFF;
   --text: #1E293B;
@@ -23,138 +23,202 @@
   --shadow-lg: 0 8px 40px rgba(0,0,0,0.14);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-.screen { display: none; min-height: 100vh; }
-.screen.active { display: flex; flex-direction: column; }
-
-/* HOME */
-#home { background: linear-gradient(160deg,#1E3A8A 0%,#3B82F6 60%,#60A5FA 100%); padding: 2rem 1rem 4rem; align-items: center; }
-.home-hero { text-align: center; padding: 2rem 0 1.5rem; color: white; }
-.home-hero h1 { font-size: clamp(2.8rem,10vw,5rem); font-weight: 900; line-height: 1; margin-bottom: 0.5rem; text-shadow: 0 4px 16px rgba(0,0,0,0.2); }
-.home-hero h1 span { color: #FDE68A; }
-.home-hero p { font-size: 1.1rem; opacity: 0.85; margin-bottom: 1.5rem; }
-.skill-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(280px,1fr)); gap: 1rem; width: 100%; max-width: 700px; }
-.skill-card { background: white; border-radius: var(--radius); padding: 1.25rem 1.5rem; cursor: pointer; box-shadow: var(--shadow); transition: transform 0.15s,box-shadow 0.15s; border: 2px solid transparent; display: flex; align-items: center; gap: 1rem; }
-.skill-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); border-color: var(--blue); }
-.skill-card:active { transform: scale(0.98); }
-.skill-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1rem; flex-shrink: 0; }
-.skill-info { flex: 1; min-width: 0; }
-.skill-name { font-weight: 800; font-size: 1rem; margin-bottom: 2px; }
-.skill-desc { font-size: 0.78rem; color: var(--muted); }
-.skill-stars { display: flex; gap: 2px; margin-top: 6px; }
-.star { font-size: 15px; opacity: 0.2; }
-.star.earned { opacity: 1; }
-
-/* GAME */
-#game { background: var(--bg); }
-.game-header { background: white; border-bottom: 1px solid var(--border); padding: 1rem 1.5rem; display: flex; align-items: center; gap: 1rem; }
-.back-btn { background: none; border: none; cursor: pointer; font-size: 1.4rem; color: var(--muted); padding: 4px 8px; border-radius: 8px; }
-.back-btn:hover { background: var(--bg); }
-.game-header-info { flex: 1; }
-.game-title { font-weight: 800; font-size: 1.1rem; }
-.game-subtitle { font-size: 0.8rem; color: var(--muted); }
-.game-stats { display: flex; gap: 8px; }
-.gstat { background: var(--bg); border-radius: 10px; padding: 6px 12px; text-align: center; min-width: 52px; }
-.gstat-val { font-weight: 800; font-size: 1.1rem; }
-.gstat-lbl { font-size: 10px; color: var(--muted); }
-.game-body { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 1.5rem 1rem 1rem; max-width: 480px; margin: 0 auto; width: 100%; }
-.progress-wrap { width: 100%; height: 8px; background: var(--border); border-radius: 99px; margin-bottom: 1.5rem; overflow: hidden; }
-#progress-bar { height: 100%; border-radius: 99px; background: var(--blue); transition: width 0.4s; }
-.timer-ring-wrap { position: relative; width: 64px; height: 64px; margin-bottom: 1.25rem; }
-.timer-ring-wrap svg { transform: rotate(-90deg); }
-#timer-num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.3rem; }
-.flashcard { background: white; border-radius: 24px; box-shadow: var(--shadow-lg); width: 100%; padding: 2.5rem 2rem; text-align: center; margin-bottom: 1.5rem; border: 3px solid transparent; transition: border-color 0.2s; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; -webkit-tap-highlight-color: transparent; }
+.screen { display: none; min-height: 100vh; flex-direction: column; }
+.screen.active { display: flex; }
+ 
+/* ── GRADE SCREEN ── */
+#grade-screen { background: linear-gradient(160deg, #1E3A8A 0%, #3B82F6 60%, #60A5FA 100%); align-items: center; padding: 2rem 1rem 3rem; }
+.hero { text-align: center; color: white; padding: 2rem 0 2.5rem; }
+.hero h1 { font-size: clamp(3rem,10vw,5rem); font-weight: 900; line-height: 1; text-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+.hero h1 span { color: #FDE68A; }
+.hero p { font-size: 1.05rem; opacity: 0.85; margin-top: 0.5rem; }
+.grade-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 1rem; width: 100%; max-width: 620px; }
+.grade-card { background: white; border-radius: var(--radius); padding: 1.4rem 1.5rem; cursor: pointer; box-shadow: var(--shadow); border: 2.5px solid transparent; transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s; display: flex; align-items: center; gap: 1rem; }
+.grade-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); border-color: var(--blue); }
+.grade-card:active { transform: scale(0.97); }
+.grade-emoji { font-size: 2.2rem; flex-shrink: 0; }
+.grade-info { flex: 1; }
+.grade-name { font-weight: 900; font-size: 1.1rem; }
+.grade-desc { font-size: 0.8rem; color: var(--muted); margin-top: 3px; }
+ 
+/* ── OP SCREEN ── */
+#op-screen { background: var(--bg); align-items: center; padding: 1.5rem 1rem 3rem; }
+.back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 0.9rem; font-weight: 700; cursor: pointer; margin-bottom: 1.5rem; padding: 6px 0; background: none; border: none; font-family: 'Nunito', sans-serif; }
+.back-link:hover { color: var(--text); }
+.op-header { text-align: center; margin-bottom: 2rem; }
+.op-header h2 { font-weight: 900; font-size: 1.8rem; }
+.op-header p { color: var(--muted); margin-top: 4px; font-size: 0.9rem; }
+.scoring-note { background: #FEF3C7; border-radius: 12px; padding: 0.6rem 1rem; font-size: 0.82rem; color: #92400E; font-weight: 700; margin-bottom: 1.5rem; text-align: center; }
+.op-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1rem; width: 100%; max-width: 480px; }
+.op-card { background: white; border-radius: var(--radius); padding: 1.6rem 1rem; cursor: pointer; box-shadow: var(--shadow); border: 2.5px solid transparent; text-align: center; transition: transform 0.15s, box-shadow 0.15s; }
+.op-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+.op-card:active { transform: scale(0.97); }
+.op-symbol { font-size: 2.4rem; font-weight: 900; margin-bottom: 0.4rem; }
+.op-name { font-weight: 800; font-size: 1rem; }
+.op-pr { font-size: 0.78rem; color: var(--muted); margin-top: 5px; }
+.op-pr .pr-val { color: var(--amber); font-weight: 800; }
+.op-stars { font-size: 13px; margin-top: 5px; }
+.op-star { opacity: 0.2; }
+.op-star.earned { opacity: 1; }
+ 
+/* ── GAME SCREEN ── */
+#game-screen { background: var(--bg); }
+.game-top { background: white; border-bottom: 1px solid var(--border); padding: 0.9rem 1.2rem; display: flex; align-items: center; gap: 1rem; }
+.game-back { background: none; border: none; cursor: pointer; font-size: 1.3rem; color: var(--muted); padding: 4px 8px; border-radius: 8px; font-family: 'Nunito', sans-serif; }
+.game-back:hover { background: var(--bg); }
+.game-top-info { flex: 1; }
+.game-top-title { font-weight: 900; font-size: 1rem; }
+.game-top-sub { font-size: 0.72rem; color: var(--muted); }
+.game-counters { display: flex; gap: 6px; }
+.gcnt { background: var(--bg); border-radius: 10px; padding: 5px 9px; text-align: center; min-width: 46px; }
+.gcnt-val { font-weight: 900; font-size: 1rem; }
+.gcnt-lbl { font-size: 9px; color: var(--muted); }
+.gcnt.score-cnt .gcnt-val { color: var(--blue); }
+.gcnt.score-cnt .gcnt-val.neg { color: var(--red); }
+ 
+.game-body { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 1.25rem 1rem 0.75rem; max-width: 480px; margin: 0 auto; width: 100%; }
+ 
+/* Timer */
+.big-timer-wrap { position: relative; width: 86px; height: 86px; margin-bottom: 1rem; flex-shrink: 0; }
+.big-timer-wrap svg { transform: rotate(-90deg); }
+#big-timer-arc { stroke: var(--blue); stroke-linecap: round; transition: stroke 0.3s; }
+#big-timer-num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.75rem; }
+ 
+/* Score bar */
+.score-bar-wrap { width: 100%; margin-bottom: 0.9rem; }
+.score-bar-label { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--muted); margin-bottom: 4px; }
+.score-bar-label .sb-score { font-weight: 900; color: var(--text); font-size: 0.95rem; }
+.score-bar-label .sb-pr { }
+.score-bar-label .sb-pr strong { color: var(--amber); }
+.score-bar-bg { height: 8px; background: var(--border); border-radius: 99px; overflow: hidden; position: relative; }
+#score-bar-fill { height: 100%; background: var(--green); border-radius: 99px; transition: width 0.25s, background 0.3s; }
+ 
+/* Flashcard */
+.flashcard { background: white; border-radius: 24px; box-shadow: var(--shadow-lg); width: 100%; padding: 1.75rem 1.5rem; text-align: center; margin-bottom: 1rem; border: 3px solid transparent; transition: border-color 0.15s; flex-shrink: 0; }
 .flashcard.correct-flash { border-color: var(--green); }
 .flashcard.wrong-flash { border-color: var(--red); }
 @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)} }
 @keyframes pop { 0%{transform:scale(1)} 50%{transform:scale(1.04)} 100%{transform:scale(1)} }
-.flashcard.shake { animation: shake 0.35s ease; }
-.flashcard.pop { animation: pop 0.25s ease; }
-.q-number { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.75rem; }
-.q-text { font-weight: 900; font-size: clamp(2.5rem,12vw,4rem); color: var(--text); margin-bottom: 0.5rem; letter-spacing: -1px; }
-.q-reveal { font-weight: 800; font-size: 1.8rem; min-height: 44px; display: flex; align-items: center; justify-content: center; }
+.flashcard.shake { animation: shake 0.3s ease; }
+.flashcard.pop { animation: pop 0.2s ease; }
+.q-text { font-weight: 900; font-size: clamp(2.2rem,11vw,3.5rem); letter-spacing: -1px; margin-bottom: 0.4rem; }
+.q-reveal { font-weight: 800; font-size: 1.4rem; min-height: 36px; display: flex; align-items: center; justify-content: center; gap: 6px; }
 .q-reveal.correct { color: var(--green-dark); }
 .q-reveal.wrong { color: var(--red); }
-.answer-row { display: flex; gap: 10px; width: 100%; margin-bottom: 1rem; }
-#ans-input { flex: 1; font-family: 'Nunito',sans-serif; font-weight: 800; font-size: 2rem; text-align: center; padding: 0.75rem; border: 2.5px solid var(--border); border-radius: 14px; outline: none; background: white; color: var(--text); -moz-appearance: textfield; appearance: textfield; transition: border-color 0.15s; }
+ 
+/* Input */
+.answer-row { display: flex; gap: 8px; width: 100%; margin-bottom: 0.75rem; }
+#ans-input { flex: 1; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 1.8rem; text-align: center; padding: 0.6rem 0.5rem; border: 2.5px solid var(--border); border-radius: 14px; outline: none; background: white; color: var(--text); -moz-appearance: textfield; appearance: textfield; transition: border-color 0.15s; }
 #ans-input::-webkit-inner-spin-button, #ans-input::-webkit-outer-spin-button { display: none; }
 #ans-input:focus { border-color: var(--blue); }
-#go-btn { background: var(--blue); color: white; border: none; border-radius: 14px; padding: 0.75rem 1.5rem; font-family: 'Nunito',sans-serif; font-weight: 800; font-size: 1.2rem; cursor: pointer; transition: background 0.15s; }
+#go-btn { background: var(--blue); color: white; border: none; border-radius: 14px; padding: 0.6rem 1.25rem; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: background 0.15s; }
 #go-btn:hover { background: var(--blue-dark); }
-#go-btn:active { transform: scale(0.96); }
-.numpad { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; width: 100%; }
-.np { background: white; border: 1.5px solid var(--border); border-radius: 12px; padding: 14px 0; font-family: 'Nunito',sans-serif; font-weight: 700; font-size: 1.2rem; cursor: pointer; text-align: center; color: var(--text); user-select: none; transition: background 0.1s; }
+#go-btn:active { transform: scale(0.95); }
+ 
+/* Numpad */
+.numpad { display: grid; grid-template-columns: repeat(4,1fr); gap: 7px; width: 100%; }
+.np { background: white; border: 1.5px solid var(--border); border-radius: 12px; padding: 13px 0; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 1.15rem; cursor: pointer; text-align: center; color: var(--text); user-select: none; transition: background 0.1s; }
 .np:hover { background: var(--bg); }
-.np:active { transform: scale(0.94); }
-.dot-trail { display: flex; gap: 5px; justify-content: center; margin-top: 1rem; flex-wrap: wrap; }
-.tdot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); transition: background 0.2s; }
-.tdot.c { background: var(--green); }
-.tdot.w { background: var(--red); }
-.tdot.cur { background: var(--blue); }
-
-/* RESULTS */
-#results { background: var(--bg); align-items: center; justify-content: center; padding: 2rem 1rem; }
-.results-card { background: white; border-radius: 28px; box-shadow: var(--shadow-lg); padding: 2.5rem 2rem; width: 100%; max-width: 420px; text-align: center; }
-.res-skill-name { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.25rem; }
-.res-title { font-weight: 900; font-size: 1.8rem; margin-bottom: 0.25rem; }
-.stars-display { display: flex; justify-content: center; gap: 8px; margin: 1.25rem 0; }
-.big-star { font-size: 3.5rem; filter: grayscale(1) opacity(0.25); transition: filter 0.4s,transform 0.4s; transform: scale(0.8); }
+.np:active { transform: scale(0.93); background: var(--border); }
+ 
+/* ── RESULTS ── */
+#results-screen { background: var(--bg); align-items: center; justify-content: center; padding: 2rem 1rem; }
+.results-card { background: white; border-radius: 28px; box-shadow: var(--shadow-lg); padding: 2.25rem 2rem; width: 100%; max-width: 420px; text-align: center; }
+.res-label { font-size: 0.82rem; color: var(--muted); margin-bottom: 0.2rem; }
+.res-score-big { font-weight: 900; font-size: 3rem; line-height: 1; margin: 0.5rem 0 0.1rem; }
+.res-score-big.positive { color: var(--green-dark); }
+.res-score-big.zero { color: var(--muted); }
+.res-score-big.negative { color: var(--red); }
+.res-breakdown { font-size: 0.88rem; color: var(--muted); margin-bottom: 0.5rem; }
+.res-breakdown .c { color: var(--green-dark); font-weight: 800; }
+.res-breakdown .w { color: var(--red); font-weight: 800; }
+.new-record-badge { display: inline-block; background: #FEF3C7; color: #92400E; font-weight: 800; font-size: 0.85rem; padding: 4px 14px; border-radius: 99px; margin: 0.5rem 0; }
+.stars-row { display: flex; justify-content: center; gap: 8px; margin: 0.9rem 0; }
+.big-star { font-size: 3.2rem; filter: grayscale(1) opacity(0.2); transform: scale(0.85); transition: filter 0.4s, transform 0.4s; }
 .big-star.lit { filter: none; transform: scale(1.05); }
-@keyframes starBounce { 0%{transform:scale(0.5)} 60%{transform:scale(1.2)} 80%{transform:scale(0.95)} 100%{transform:scale(1.05)} }
-.big-star.bounce { animation: starBounce 0.5s cubic-bezier(0.36,0.07,0.19,0.97) forwards; }
-.res-score-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 1.25rem 0; }
-.res-stat { background: var(--bg); border-radius: 12px; padding: 0.75rem 0.5rem; }
-.res-stat-val { font-weight: 800; font-size: 1.5rem; }
-.res-stat-lbl { font-size: 11px; color: var(--muted); margin-top: 2px; }
-.res-feedback { font-size: 1rem; color: var(--muted); margin-bottom: 1.5rem; line-height: 1.5; }
-.res-btns { display: flex; flex-direction: column; gap: 10px; }
-.btn-primary { background: var(--blue); color: white; border: none; border-radius: 14px; padding: 1rem; font-family: 'Nunito',sans-serif; font-weight: 800; font-size: 1.05rem; cursor: pointer; width: 100%; transition: background 0.15s; }
+@keyframes starPop { 0%{transform:scale(0.4)} 60%{transform:scale(1.25)} 80%{transform:scale(0.95)} 100%{transform:scale(1.05)} }
+.big-star.bounce { animation: starPop 0.45s cubic-bezier(0.36,0.07,0.19,0.97) forwards; }
+.res-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin: 0.9rem 0; }
+.rs { background: var(--bg); border-radius: 12px; padding: 0.7rem 0.5rem; }
+.rs-val { font-weight: 900; font-size: 1.3rem; }
+.rs-lbl { font-size: 10px; color: var(--muted); margin-top: 2px; }
+.res-msg { font-size: 0.92rem; color: var(--muted); margin-bottom: 1.4rem; line-height: 1.5; }
+.res-btns { display: flex; flex-direction: column; gap: 9px; }
+.btn-primary { background: var(--blue); color: white; border: none; border-radius: 14px; padding: 0.95rem; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1rem; cursor: pointer; width: 100%; transition: background 0.15s; }
 .btn-primary:hover { background: var(--blue-dark); }
-.btn-secondary { background: var(--bg); color: var(--text); border: 1.5px solid var(--border); border-radius: 14px; padding: 0.9rem; font-family: 'Nunito',sans-serif; font-weight: 700; font-size: 1rem; cursor: pointer; width: 100%; }
+.btn-secondary { background: var(--bg); color: var(--text); border: 1.5px solid var(--border); border-radius: 14px; padding: 0.85rem; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.95rem; cursor: pointer; width: 100%; }
 .btn-secondary:hover { background: var(--border); }
-@media (max-width:400px) { .game-stats { display: none; } .np { padding: 12px 0; } }
+ 
+@media (max-width: 380px) { .game-counters { display: none; } .np { padding: 11px 0; } }
 </style>
 </head>
 <body>
-
-<div id="home" class="screen active">
-  <div class="home-hero">
-    <h1>Math<span>Blitz</span> ⚡</h1>
-    <p>Pick a skill. Beat the clock. Earn stars.</p>
+ 
+<!-- ══ GRADE SCREEN ══ -->
+<div id="grade-screen" class="screen active">
+  <div class="hero">
+    <h1>Math<span>Blitz</span> &#9889;</h1>
+    <p>60 seconds. Score = correct &minus; wrong.</p>
   </div>
-  <div class="skill-grid" id="skill-grid"></div>
+  <div class="grade-grid" id="grade-grid"></div>
 </div>
-
-<div id="game" class="screen">
-  <div class="game-header">
-    <button class="back-btn" id="back-btn">&#8592;</button>
-    <div class="game-header-info">
-      <div class="game-title" id="game-title">Addition: Basics</div>
-      <div class="game-subtitle" id="game-subtitle">10 questions</div>
+ 
+<!-- ══ OP SCREEN ══ -->
+<div id="op-screen" class="screen">
+  <div style="width:100%;max-width:480px;margin:0 auto;padding:0 1rem;">
+    <button class="back-link" id="back-to-grades">&#8592; Change grade</button>
+    <div class="op-header">
+      <h2 id="op-screen-title">Choose an operation</h2>
+      <p id="op-screen-sub">Select what you want to drill</p>
     </div>
-    <div class="game-stats">
-      <div class="gstat"><div class="gstat-val" id="gs-score">0</div><div class="gstat-lbl">score</div></div>
-      <div class="gstat"><div class="gstat-val" id="gs-streak">0</div><div class="gstat-lbl">streak</div></div>
+    <div class="scoring-note">&#43;1 correct &nbsp;|&nbsp; &#8722;1 wrong &nbsp;|&nbsp; 60 seconds</div>
+    <div class="op-grid" id="op-grid"></div>
+  </div>
+</div>
+ 
+<!-- ══ GAME SCREEN ══ -->
+<div id="game-screen" class="screen">
+  <div class="game-top">
+    <button class="game-back" id="game-back-btn">&#8592;</button>
+    <div class="game-top-info">
+      <div class="game-top-title" id="game-top-title">Addition &mdash; Grade 2</div>
+      <div class="game-top-sub">+1 correct &nbsp;&bull;&nbsp; &minus;1 wrong &nbsp;&bull;&nbsp; 60 sec</div>
+    </div>
+    <div class="game-counters">
+      <div class="gcnt score-cnt"><div class="gcnt-val" id="gc-score">0</div><div class="gcnt-lbl">score</div></div>
+      <div class="gcnt"><div class="gcnt-val" id="gc-correct" style="color:var(--green-dark)">0</div><div class="gcnt-lbl">correct</div></div>
+      <div class="gcnt"><div class="gcnt-val" id="gc-wrong" style="color:var(--red)">0</div><div class="gcnt-lbl">wrong</div></div>
     </div>
   </div>
+ 
   <div class="game-body">
-    <div class="progress-wrap"><div id="progress-bar" style="width:0%"></div></div>
-    <div class="timer-ring-wrap">
-      <svg width="64" height="64" viewBox="0 0 64 64">
-        <circle cx="32" cy="32" r="28" fill="none" stroke="#E2E8F0" stroke-width="5"/>
-        <circle id="timer-arc" cx="32" cy="32" r="28" fill="none" stroke="#3B82F6" stroke-width="5" stroke-linecap="round" stroke-dasharray="176" stroke-dashoffset="0"/>
+    <div class="big-timer-wrap">
+      <svg width="86" height="86" viewBox="0 0 86 86">
+        <circle cx="43" cy="43" r="36" fill="none" stroke="#E2E8F0" stroke-width="7"/>
+        <circle id="big-timer-arc" cx="43" cy="43" r="36" fill="none" stroke="#3B82F6" stroke-width="7" stroke-linecap="round" stroke-dasharray="226" stroke-dashoffset="0"/>
       </svg>
-      <div id="timer-num">10</div>
+      <div id="big-timer-num">60</div>
     </div>
+ 
+    <div class="score-bar-wrap">
+      <div class="score-bar-label">
+        <span>score: <span class="sb-score" id="sb-score">0</span></span>
+        <span class="sb-pr" id="sb-pr">PR: <strong>&#8212;</strong></span>
+      </div>
+      <div class="score-bar-bg"><div id="score-bar-fill" style="width:0%"></div></div>
+    </div>
+ 
     <div class="flashcard" id="flashcard">
-      <div class="q-number" id="q-number">Question 1 of 10</div>
       <div class="q-text" id="q-text">? + ? =</div>
       <div class="q-reveal" id="q-reveal"></div>
     </div>
+ 
     <div class="answer-row">
       <input id="ans-input" type="number" inputmode="numeric" placeholder="?" autocomplete="off">
       <button id="go-btn">Go</button>
     </div>
+ 
     <div class="numpad" id="numpad">
       <button class="np" data-n="7">7</button>
       <button class="np" data-n="8">8</button>
@@ -169,86 +233,179 @@ body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--te
       <button class="np" data-n="3">3</button>
       <button class="np" data-n="neg">&#8722;</button>
     </div>
-    <div class="dot-trail" id="dot-trail"></div>
   </div>
 </div>
-
-<div id="results" class="screen">
+ 
+<!-- ══ RESULTS SCREEN ══ -->
+<div id="results-screen" class="screen">
   <div class="results-card">
-    <div class="res-skill-name" id="res-skill-name"></div>
-    <div class="res-title" id="res-title">Nice work!</div>
-    <div class="stars-display">
+    <div class="res-label" id="res-label"></div>
+    <div class="res-score-big" id="res-score-big">0</div>
+    <div class="res-breakdown" id="res-breakdown"></div>
+    <div id="new-record-wrap"></div>
+    <div class="stars-row">
       <div class="big-star" id="star1">&#11088;</div>
       <div class="big-star" id="star2">&#11088;</div>
       <div class="big-star" id="star3">&#11088;</div>
     </div>
-    <div class="res-score-row">
-      <div class="res-stat"><div class="res-stat-val" id="res-correct">-</div><div class="res-stat-lbl">correct</div></div>
-      <div class="res-stat"><div class="res-stat-val" id="res-acc">-</div><div class="res-stat-lbl">accuracy</div></div>
-      <div class="res-stat"><div class="res-stat-val" id="res-avg">-</div><div class="res-stat-lbl">avg time</div></div>
+    <div class="res-stats">
+      <div class="rs"><div class="rs-val" id="rs-acc">&#8212;</div><div class="rs-lbl">accuracy</div></div>
+      <div class="rs"><div class="rs-val" id="rs-streak">&#8212;</div><div class="rs-lbl">best streak</div></div>
+      <div class="rs"><div class="rs-val" id="rs-pr">&#8212;</div><div class="rs-lbl">your record</div></div>
     </div>
-    <div class="res-feedback" id="res-feedback"></div>
+    <div class="res-msg" id="res-msg"></div>
     <div class="res-btns">
-      <button class="btn-primary" id="replay-btn">Try again</button>
-      <button class="btn-secondary" id="home-btn2">Choose a skill</button>
+      <button class="btn-primary" id="drill-again-btn">Drill again &#8635;</button>
+      <button class="btn-secondary" id="change-op-btn">Change operation</button>
+      <button class="btn-secondary" id="change-grade-btn">Change grade</button>
     </div>
   </div>
 </div>
-
+ 
 <script>
-var SKILLS = [
-  {id:'add1', name:'Addition: Basics',      op:'+', lo:1,  hi:10, desc:'Single digits',          color:'#DBEAFE', tc:'#1E40AF', icon:'1+1', qs:10, sec:12},
-  {id:'add2', name:'Addition: Level 2',     op:'+', lo:5,  hi:25, desc:'Two-digit numbers',       color:'#DBEAFE', tc:'#1E40AF', icon:'12+', qs:10, sec:10},
-  {id:'add3', name:'Addition: Level 3',     op:'+', lo:10, hi:99, desc:'Big numbers, go fast!',   color:'#DBEAFE', tc:'#1E40AF', icon:'99+', qs:12, sec:10},
-  {id:'sub1', name:'Subtraction: Basics',   op:'-', lo:1,  hi:10, desc:'Stay positive',           color:'#FCE7F3', tc:'#9D174D', icon:'9-3', qs:10, sec:12},
-  {id:'sub2', name:'Subtraction: Level 2',  op:'-', lo:5,  hi:25, desc:'Two-digit differences',   color:'#FCE7F3', tc:'#9D174D', icon:'25-', qs:10, sec:10},
-  {id:'sub3', name:'Subtraction: Level 3',  op:'-', lo:10, hi:99, desc:'Big numbers!',            color:'#FCE7F3', tc:'#9D174D', icon:'99-', qs:12, sec:10},
-  {id:'mul1', name:'Times Tables: x2-x5',   op:'x', lo:2,  hi:5,  desc:'Learn your first tables', color:'#D1FAE5', tc:'#065F46', icon:'x2-5',qs:10, sec:12},
-  {id:'mul2', name:'Times Tables: x6-x9',   op:'x', lo:6,  hi:9,  desc:'The trickier ones',       color:'#D1FAE5', tc:'#065F46', icon:'x6-9',qs:10, sec:10},
-  {id:'mul3', name:'Times Tables: x10-x12', op:'x', lo:10, hi:12, desc:'Big table energy',        color:'#D1FAE5', tc:'#065F46', icon:'x12', qs:12, sec:10},
-  {id:'div1', name:'Division: Basics',      op:'/', lo:2,  hi:5,  desc:'Simple facts',            color:'#FEF3C7', tc:'#92400E', icon:'/2-5',qs:10, sec:12},
-  {id:'div2', name:'Division: Level 2',     op:'/', lo:6,  hi:9,  desc:'Dividing by 6,7,8,9',    color:'#FEF3C7', tc:'#92400E', icon:'/6-9',qs:10, sec:10},
-  {id:'div3', name:'Division: Level 3',     op:'/', lo:10, hi:12, desc:'Dividing by 10,11,12',   color:'#FEF3C7', tc:'#92400E', icon:'/12', qs:12, sec:10},
-  {id:'mix1', name:'Mixed: All Operations', op:'m', lo:1,  hi:10, desc:'All four operations',     color:'#EDE9FE', tc:'#4C1D95', icon:'+-x/', qs:15, sec:10},
-  {id:'mix2', name:'Mixed: Expert Mode',    op:'m', lo:5,  hi:12, desc:'Everything, go fast!',    color:'#EDE9FE', tc:'#4C1D95', icon:'zap', qs:20, sec:8}
-];
-
-var current = null;
-var questions = [];
-var qi = 0;
-var score = 0;
-var streak = 0;
-var numCorrect = 0;
-var answered = false;
-var times = [];
-var timerHandle = null;
-var qStart = 0;
-var dotHistory = [];
-
-function getProgress() {
-  try { return JSON.parse(localStorage.getItem('mathblitz') || '{}'); }
-  catch(e) { return {}; }
-}
-
-function saveProgress(id, stars) {
-  var p = getProgress();
-  p[id] = Math.max(p[id] || 0, stars);
-  localStorage.setItem('mathblitz', JSON.stringify(p));
-}
-
-function randInt(a, b) {
-  return Math.floor(Math.random() * (b - a + 1)) + a;
-}
-
-function makeQ(skill) {
-  var op = skill.op;
-  if (op === 'm') {
-    var opts = ['+', '-', 'x', '/'];
-    op = opts[randInt(0, 3)];
+var GRADES = [
+  {
+    id:'g1', name:'1st Grade', emoji:'&#x1F423;', desc:'Addition and subtraction to 20',
+    ops:[
+      {id:'g1-add', op:'+', name:'Addition',    symbol:'+',         color:'#DBEAFE', tc:'#1E40AF', lo:1, hi:10},
+      {id:'g1-sub', op:'-', name:'Subtraction', symbol:'&#8722;',   color:'#FCE7F3', tc:'#9D174D', lo:1, hi:10}
+    ]
+  },
+  {
+    id:'g2', name:'2nd Grade', emoji:'&#x1F430;', desc:'Larger numbers, intro to multiplication',
+    ops:[
+      {id:'g2-add', op:'+', name:'Addition',       symbol:'+',        color:'#DBEAFE', tc:'#1E40AF', lo:5,  hi:25},
+      {id:'g2-sub', op:'-', name:'Subtraction',    symbol:'&#8722;',  color:'#FCE7F3', tc:'#9D174D', lo:5,  hi:25},
+      {id:'g2-mul', op:'x', name:'Multiplication', symbol:'&times;',  color:'#D1FAE5', tc:'#065F46', lo:2,  hi:5}
+    ]
+  },
+  {
+    id:'g3', name:'3rd Grade', emoji:'&#x1F98A;', desc:'Times tables, intro to division',
+    ops:[
+      {id:'g3-add', op:'+', name:'Addition',       symbol:'+',        color:'#DBEAFE', tc:'#1E40AF', lo:10, hi:50},
+      {id:'g3-sub', op:'-', name:'Subtraction',    symbol:'&#8722;',  color:'#FCE7F3', tc:'#9D174D', lo:10, hi:50},
+      {id:'g3-mul', op:'x', name:'Multiplication', symbol:'&times;',  color:'#D1FAE5', tc:'#065F46', lo:2,  hi:9},
+      {id:'g3-div', op:'/', name:'Division',       symbol:'&divide;', color:'#FEF3C7', tc:'#92400E', lo:2,  hi:5}
+    ]
+  },
+  {
+    id:'g4', name:'4th Grade', emoji:'&#x1F98C;', desc:'Full times tables, division',
+    ops:[
+      {id:'g4-add', op:'+', name:'Addition',       symbol:'+',        color:'#DBEAFE', tc:'#1E40AF', lo:25, hi:99},
+      {id:'g4-sub', op:'-', name:'Subtraction',    symbol:'&#8722;',  color:'#FCE7F3', tc:'#9D174D', lo:25, hi:99},
+      {id:'g4-mul', op:'x', name:'Multiplication', symbol:'&times;',  color:'#D1FAE5', tc:'#065F46', lo:2,  hi:12},
+      {id:'g4-div', op:'/', name:'Division',       symbol:'&divide;', color:'#FEF3C7', tc:'#92400E', lo:2,  hi:9}
+    ]
+  },
+  {
+    id:'g5', name:'5th Grade', emoji:'&#x1F981;', desc:'All operations, bigger numbers',
+    ops:[
+      {id:'g5-add', op:'+', name:'Addition',       symbol:'+',        color:'#DBEAFE', tc:'#1E40AF', lo:50, hi:999},
+      {id:'g5-sub', op:'-', name:'Subtraction',    symbol:'&#8722;',  color:'#FCE7F3', tc:'#9D174D', lo:50, hi:999},
+      {id:'g5-mul', op:'x', name:'Multiplication', symbol:'&times;',  color:'#D1FAE5', tc:'#065F46', lo:6,  hi:12},
+      {id:'g5-div', op:'/', name:'Division',       symbol:'&divide;', color:'#FEF3C7', tc:'#92400E', lo:2,  hi:12}
+    ]
   }
+];
+ 
+var DRILL_SECONDS = 60;
+var WRONG_PENALTY = 1; // points deducted per wrong answer
+ 
+// ══ State ══
+var selectedGrade = null;
+var selectedOp = null;
+var currentQ = null;
+var netScore = 0;
+var numCorrect = 0;
+var numWrong = 0;
+var bestStreak = 0;
+var curStreak = 0;
+var answered = false;
+var timerHandle = null;
+var timeLeft = DRILL_SECONDS;
+var drillRunning = false;
+var prTarget = 20;
+ 
+// ══ Storage ══
+function getStore() {
+  try { return JSON.parse(localStorage.getItem('mathblitz3') || '{}'); } catch(e) { return {}; }
+}
+function saveStore(s) { localStorage.setItem('mathblitz3', JSON.stringify(s)); }
+function getPR(id) { return getStore()['pr_' + id] || 0; }
+function getStars(id) { return getStore()['stars_' + id] || 0; }
+function recordResult(id, score, stars) {
+  var s = getStore();
+  var oldPR = s['pr_' + id] || 0;
+  var isNew = score > oldPR;
+  if (isNew) { s['pr_' + id] = score; }
+  if (stars > (s['stars_' + id] || 0)) { s['stars_' + id] = stars; }
+  saveStore(s);
+  return isNew;
+}
+ 
+// ══ Helpers ══
+function randInt(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a; }
+function showScreen(id) {
+  var all = document.querySelectorAll('.screen');
+  for (var i = 0; i < all.length; i++) { all[i].classList.remove('active'); }
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+ 
+// ══ Grade Screen ══
+function renderGrades() {
+  var grid = document.getElementById('grade-grid');
+  grid.innerHTML = '';
+  for (var i = 0; i < GRADES.length; i++) {
+    var g = GRADES[i];
+    var card = document.createElement('div');
+    card.className = 'grade-card';
+    card.innerHTML = '<div class="grade-emoji">' + g.emoji + '</div><div class="grade-info"><div class="grade-name">' + g.name + '</div><div class="grade-desc">' + g.desc + '</div></div>';
+    (function(grade) { card.addEventListener('click', function() { selectGrade(grade); }); })(g);
+    grid.appendChild(card);
+  }
+}
+ 
+function selectGrade(grade) {
+  selectedGrade = grade;
+  renderOps();
+  showScreen('op-screen');
+}
+ 
+// ══ Op Screen ══
+function renderOps() {
+  document.getElementById('op-screen-title').textContent = selectedGrade.name;
+  document.getElementById('op-screen-sub').textContent = 'Choose an operation to drill';
+  var grid = document.getElementById('op-grid');
+  grid.innerHTML = '';
+  var ops = selectedGrade.ops;
+  for (var i = 0; i < ops.length; i++) {
+    var op = ops[i];
+    var pr = getPR(op.id);
+    var stars = getStars(op.id);
+    var s1 = stars >= 1 ? ' earned' : '';
+    var s2 = stars >= 2 ? ' earned' : '';
+    var s3 = stars >= 3 ? ' earned' : '';
+    var prText = pr > 0 ? 'PR: <span class="pr-val">' + pr + '</span>' : 'No record yet';
+    var card = document.createElement('div');
+    card.className = 'op-card';
+    card.style.borderColor = op.color;
+    card.innerHTML =
+      '<div class="op-symbol" style="color:' + op.tc + '">' + op.symbol + '</div>' +
+      '<div class="op-name">' + op.name + '</div>' +
+      '<div class="op-pr">' + prText + '</div>' +
+      '<div class="op-stars"><span class="op-star' + s1 + '">&#11088;</span><span class="op-star' + s2 + '">&#11088;</span><span class="op-star' + s3 + '">&#11088;</span></div>';
+    (function(o) { card.addEventListener('click', function() { startDrill(o); }); })(op);
+    grid.appendChild(card);
+  }
+}
+ 
+// ══ Question Generator ══
+function makeQuestion() {
+  var op = selectedOp.op;
+  var lo = selectedOp.lo;
+  var hi = selectedOp.hi;
   var a, b, ans;
-  var lo = skill.lo;
-  var hi = skill.hi;
   if (op === '+') {
     a = randInt(lo, hi); b = randInt(lo, hi); ans = a + b;
     return {text: a + ' + ' + b + ' =', ans: ans};
@@ -261,251 +418,200 @@ function makeQ(skill) {
     a = randInt(lo, hi); b = randInt(1, 12); ans = a * b;
     return {text: a + ' x ' + b + ' =', ans: ans};
   }
-  // division
+  // division — always whole answers
   b = randInt(lo, hi); ans = randInt(1, 12); a = b * ans;
   return {text: a + ' / ' + b + ' =', ans: ans};
 }
-
-function buildQuestions(skill) {
-  var arr = [];
-  for (var i = 0; i < skill.qs; i++) {
-    arr.push(makeQ(skill));
-  }
-  return arr;
-}
-
-function showScreen(id) {
-  var screens = document.querySelectorAll('.screen');
-  for (var i = 0; i < screens.length; i++) {
-    screens[i].classList.remove('active');
-  }
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0, 0);
-}
-
-function renderHome() {
-  var progress = getProgress();
-  var grid = document.getElementById('skill-grid');
-  grid.innerHTML = '';
-  for (var i = 0; i < SKILLS.length; i++) {
-    var skill = SKILLS[i];
-    var earned = progress[skill.id] || 0;
-    var card = document.createElement('div');
-    card.className = 'skill-card';
-    var s1 = earned >= 1 ? ' earned' : '';
-    var s2 = earned >= 2 ? ' earned' : '';
-    var s3 = earned >= 3 ? ' earned' : '';
-    card.innerHTML =
-      '<div class="skill-icon" style="background:' + skill.color + ';color:' + skill.tc + '">' + skill.icon + '</div>' +
-      '<div class="skill-info">' +
-        '<div class="skill-name">' + skill.name + '</div>' +
-        '<div class="skill-desc">' + skill.desc + ' &middot; ' + skill.qs + ' Qs &middot; ' + skill.sec + 's</div>' +
-        '<div class="skill-stars">' +
-          '<span class="star' + s1 + '">&#11088;</span>' +
-          '<span class="star' + s2 + '">&#11088;</span>' +
-          '<span class="star' + s3 + '">&#11088;</span>' +
-        '</div>' +
-      '</div>';
-    (function(sk) {
-      card.addEventListener('click', function() { startSkill(sk); });
-    })(skill);
-    grid.appendChild(card);
-  }
-}
-
-function startSkill(skill) {
-  current = skill;
-  questions = buildQuestions(skill);
-  qi = 0; score = 0; streak = 0; numCorrect = 0;
-  times = []; dotHistory = []; answered = false;
-  document.getElementById('game-title').textContent = skill.name;
-  document.getElementById('game-subtitle').textContent = skill.qs + ' questions, ' + skill.sec + 's each';
-  showScreen('game');
-  renderDots();
-  nextQ();
-}
-
-function nextQ() {
-  if (qi >= questions.length) { showResults(); return; }
-  answered = false;
-  var q = questions[qi];
-  document.getElementById('q-number').textContent = 'Question ' + (qi + 1) + ' of ' + current.qs;
-  document.getElementById('q-text').textContent = q.text;
+ 
+// ══ Drill ══
+function startDrill(op) {
+  selectedOp = op;
+  netScore = 0; numCorrect = 0; numWrong = 0;
+  bestStreak = 0; curStreak = 0;
+  answered = false; timeLeft = DRILL_SECONDS; drillRunning = false;
+  clearInterval(timerHandle);
+ 
+  var pr = getPR(op.id);
+  prTarget = pr > 0 ? pr : 15;
+ 
+  document.getElementById('game-top-title').textContent = op.name + ' \u2014 ' + selectedGrade.name;
+  document.getElementById('gc-score').textContent = '0';
+  document.getElementById('gc-score').className = 'gcnt-val';
+  document.getElementById('gc-correct').textContent = '0';
+  document.getElementById('gc-wrong').textContent = '0';
+  document.getElementById('sb-score').textContent = '0';
+  document.getElementById('sb-pr').innerHTML = pr > 0 ? 'PR: <strong>' + pr + '</strong>' : 'PR: <strong>\u2014</strong>';
+  document.getElementById('score-bar-fill').style.width = '0%';
+  document.getElementById('score-bar-fill').style.background = 'var(--green)';
+  document.getElementById('big-timer-num').textContent = DRILL_SECONDS;
+  document.getElementById('big-timer-arc').style.strokeDashoffset = '0';
+  document.getElementById('big-timer-arc').style.stroke = '#3B82F6';
+  document.getElementById('flashcard').className = 'flashcard';
   document.getElementById('q-reveal').textContent = '';
   document.getElementById('q-reveal').className = 'q-reveal';
-  var fc = document.getElementById('flashcard');
-  fc.className = 'flashcard';
-  document.getElementById('ans-input').value = '';
-  document.getElementById('ans-input').focus();
-  document.getElementById('progress-bar').style.width = Math.round(qi / current.qs * 100) + '%';
-  document.getElementById('gs-score').textContent = score;
-  document.getElementById('gs-streak').textContent = streak;
-  startTimer();
+ 
+  showScreen('game-screen');
+  loadNextQ();
 }
-
-function startTimer() {
-  clearInterval(timerHandle);
-  qStart = Date.now();
-  var limit = current.sec;
-  var circ = 176;
-  document.getElementById('timer-arc').style.stroke = '#3B82F6';
+ 
+function loadNextQ() {
+  currentQ = makeQuestion();
+  answered = false;
+  document.getElementById('q-text').textContent = currentQ.text;
+  document.getElementById('q-reveal').textContent = '';
+  document.getElementById('q-reveal').className = 'q-reveal';
+  document.getElementById('flashcard').className = 'flashcard';
+  document.getElementById('ans-input').value = '';
+  if (!drillRunning) { drillRunning = true; startCountdown(); }
+  document.getElementById('ans-input').focus();
+}
+ 
+function startCountdown() {
+  var circ = 226;
   timerHandle = setInterval(function() {
-    var elapsed = (Date.now() - qStart) / 1000;
-    var pct = Math.max(0, 1 - elapsed / limit);
-    var offset = circ * (1 - pct);
-    document.getElementById('timer-arc').style.strokeDashoffset = offset;
-    var secs = Math.ceil(Math.max(0, limit - elapsed));
-    document.getElementById('timer-num').textContent = secs;
-    if (pct < 0.3) {
-      document.getElementById('timer-arc').style.stroke = '#EF4444';
-    } else if (pct < 0.6) {
-      document.getElementById('timer-arc').style.stroke = '#F5A623';
-    } else {
-      document.getElementById('timer-arc').style.stroke = '#3B82F6';
-    }
-    if (elapsed >= limit && !answered) {
-      clearInterval(timerHandle);
-      resolveAnswer(false, true);
-    }
+    timeLeft -= 0.08;
+    if (timeLeft <= 0) { timeLeft = 0; clearInterval(timerHandle); endDrill(); return; }
+    var pct = timeLeft / DRILL_SECONDS;
+    document.getElementById('big-timer-arc').style.strokeDashoffset = circ * (1 - pct);
+    document.getElementById('big-timer-num').textContent = Math.ceil(timeLeft);
+    var arc = document.getElementById('big-timer-arc');
+    if (pct < 0.25) { arc.style.stroke = '#EF4444'; }
+    else if (pct < 0.5) { arc.style.stroke = '#F59E0B'; }
+    else { arc.style.stroke = '#3B82F6'; }
   }, 80);
 }
-
+ 
 function submitAnswer() {
-  if (answered) return;
+  if (answered || !drillRunning) return;
   var val = parseInt(document.getElementById('ans-input').value, 10);
   if (isNaN(val)) { document.getElementById('ans-input').focus(); return; }
-  resolveAnswer(val === questions[qi].ans);
-}
-
-function resolveAnswer(isCorrect, timedOut) {
-  if (answered) return;
   answered = true;
-  clearInterval(timerHandle);
-  var elapsed = (Date.now() - qStart) / 1000;
-  times.push(elapsed);
-  dotHistory.push(isCorrect ? 'c' : 'w');
-  renderDots();
+ 
+  var isCorrect = val === currentQ.ans;
   var fc = document.getElementById('flashcard');
   var rv = document.getElementById('q-reveal');
+ 
   if (isCorrect) {
     numCorrect++;
-    streak++;
-    var bonus = Math.max(0, Math.round((current.sec - elapsed) * 8));
-    score += 100 + bonus;
+    curStreak++;
+    if (curStreak > bestStreak) { bestStreak = curStreak; }
+    netScore++;
     fc.className = 'flashcard correct-flash pop';
-    rv.textContent = 'Correct!';
+    rv.textContent = 'Correct! +1';
     rv.className = 'q-reveal correct';
   } else {
-    streak = 0;
+    numWrong++;
+    curStreak = 0;
+    netScore -= WRONG_PENALTY;
     fc.className = 'flashcard wrong-flash shake';
-    rv.textContent = (timedOut ? 'Time! ' : 'Nope! ') + 'Answer: ' + questions[qi].ans;
+    rv.innerHTML = currentQ.ans + ' &nbsp; &minus;1';
     rv.className = 'q-reveal wrong';
   }
-  document.getElementById('gs-score').textContent = score;
-  document.getElementById('gs-streak').textContent = streak;
-  document.getElementById('timer-arc').style.strokeDashoffset = 176;
-  document.getElementById('timer-num').textContent = '';
-  qi++;
-  var delay = isCorrect ? 700 : 1600;
-  setTimeout(nextQ, delay);
+ 
+  // Update header counters
+  var scoreEl = document.getElementById('gc-score');
+  scoreEl.textContent = netScore;
+  scoreEl.className = 'gcnt-val' + (netScore < 0 ? ' neg' : '');
+  document.getElementById('gc-correct').textContent = numCorrect;
+  document.getElementById('gc-wrong').textContent = numWrong;
+ 
+  // Update score bar
+  document.getElementById('sb-score').textContent = netScore;
+  var barPct = Math.max(0, Math.min(100, Math.round(netScore / prTarget * 100)));
+  var barEl = document.getElementById('score-bar-fill');
+  barEl.style.width = barPct + '%';
+  barEl.style.background = netScore < 0 ? 'var(--red)' : netScore >= prTarget ? 'var(--amber)' : 'var(--green)';
+ 
+  setTimeout(loadNextQ, isCorrect ? 350 : 900);
 }
-
-function renderDots() {
-  var trail = document.getElementById('dot-trail');
-  trail.innerHTML = '';
-  var total = current ? current.qs : 10;
-  for (var i = 0; i < total; i++) {
-    var d = document.createElement('div');
-    if (i < dotHistory.length) {
-      d.className = 'tdot ' + dotHistory[i];
-    } else if (i === dotHistory.length) {
-      d.className = 'tdot cur';
-    } else {
-      d.className = 'tdot';
-    }
-    trail.appendChild(d);
-  }
-}
-
-function calcStars(acc, avgTime, limit) {
-  if (acc >= 0.9 && avgTime <= limit * 0.6) return 3;
-  if (acc >= 0.7) return 2;
-  if (acc >= 0.5) return 1;
+ 
+// ══ Results ══
+function calcStars(score) {
+  var bm = {
+    'g1-add':[8,14,20], 'g1-sub':[6,12,18],
+    'g2-add':[8,14,20], 'g2-sub':[6,12,18], 'g2-mul':[6,10,16],
+    'g3-add':[8,14,20], 'g3-sub':[6,12,18], 'g3-mul':[8,12,18], 'g3-div':[6,10,16],
+    'g4-add':[6,12,18], 'g4-sub':[6,12,18], 'g4-mul':[8,12,18], 'g4-div':[6,10,16],
+    'g5-add':[4,8,14],  'g5-sub':[4,8,14],  'g5-mul':[6,10,16], 'g5-div':[4,8,14]
+  };
+  var b = bm[selectedOp.id] || [6, 10, 16];
+  if (score >= b[2]) return 3;
+  if (score >= b[1]) return 2;
+  if (score >= b[0]) return 1;
   return 0;
 }
-
-function showResults() {
+ 
+function endDrill() {
+  drillRunning = false;
   clearInterval(timerHandle);
-  var total = current.qs;
-  var acc = numCorrect / total;
-  var sum = 0;
-  for (var i = 0; i < times.length; i++) { sum += times[i]; }
-  var avg = times.length ? sum / times.length : 0;
-  var stars = calcStars(acc, avg, current.sec);
-  saveProgress(current.id, stars);
-  renderHome();
-  document.getElementById('res-skill-name').textContent = current.name;
-  var titles = ['Keep trying!', 'Good effort!', 'Well done!', 'Outstanding!'];
-  document.getElementById('res-title').textContent = titles[stars] || 'Done!';
-  document.getElementById('res-correct').textContent = numCorrect + '/' + total;
-  document.getElementById('res-acc').textContent = Math.round(acc * 100) + '%';
-  document.getElementById('res-avg').textContent = avg.toFixed(1) + 's';
+ 
+  var total = numCorrect + numWrong;
+  var acc = total > 0 ? Math.round(numCorrect / total * 100) : 0;
+  var stars = calcStars(netScore);
+  var isNewRecord = recordResult(selectedOp.id, netScore, stars);
+  renderOps();
+ 
+  // Score headline
+  var scoreBig = document.getElementById('res-score-big');
+  scoreBig.textContent = (netScore > 0 ? '+' : '') + netScore;
+  scoreBig.className = 'res-score-big ' + (netScore > 0 ? 'positive' : netScore < 0 ? 'negative' : 'zero');
+ 
+  document.getElementById('res-label').textContent = selectedOp.name + ' \u2014 ' + selectedGrade.name;
+  document.getElementById('res-breakdown').innerHTML =
+    '<span class="c">+' + numCorrect + ' correct</span> &nbsp; <span class="w">&minus;' + numWrong + ' wrong</span>';
+ 
+  var nrWrap = document.getElementById('new-record-wrap');
+  nrWrap.innerHTML = isNewRecord && netScore > 0 ? '<div class="new-record-badge">&#127942; New personal record!</div>' : '';
+ 
+  document.getElementById('rs-acc').textContent = acc + '%';
+  document.getElementById('rs-streak').textContent = bestStreak;
+  var currentPR = getPR(selectedOp.id);
+  document.getElementById('rs-pr').textContent = currentPR > 0 ? currentPR : '\u2014';
+ 
   var msgs = [
-    ['Keep at it! Every expert started as a beginner.', 'Try again, you will do better!'],
-    ['Good start! Practice a bit more for that second star.', 'You are getting there, keep going!'],
-    ['Solid work! Speed it up for 3 stars.', 'Two stars! A little faster and you will nail it.'],
-    ['Perfect! You crushed it!', 'Three stars! You are a math wizard!']
+    ['Keep going \u2014 every drill makes you faster!', 'Shake it off and try again!'],
+    ['Good effort! A little more accuracy = more points.', 'One star \u2014 keep drilling!'],
+    ['Nice! Push your accuracy up for 3 stars.', 'Two stars! You\'re getting sharper.'],
+    ['Outstanding! You crushed it! \ud83d\udd25', 'Three stars! Math machine! \u26a1']
   ];
   var pool = msgs[stars];
-  document.getElementById('res-feedback').textContent = pool[randInt(0, pool.length - 1)];
-  var s1 = document.getElementById('star1');
-  var s2 = document.getElementById('star2');
-  var s3 = document.getElementById('star3');
-  s1.className = 'big-star';
-  s2.className = 'big-star';
-  s3.className = 'big-star';
-  showScreen('results');
-  document.getElementById('progress-bar').style.width = '100%';
-  if (stars >= 1) { setTimeout(function() { s1.className = 'big-star lit bounce'; }, 300); }
-  if (stars >= 2) { setTimeout(function() { s2.className = 'big-star lit bounce'; }, 650); }
-  if (stars >= 3) { setTimeout(function() { s3.className = 'big-star lit bounce'; }, 1000); }
+  document.getElementById('res-msg').textContent = pool[randInt(0, pool.length - 1)];
+ 
+  document.getElementById('star1').className = 'big-star';
+  document.getElementById('star2').className = 'big-star';
+  document.getElementById('star3').className = 'big-star';
+ 
+  showScreen('results-screen');
+ 
+  if (stars >= 1) { setTimeout(function() { document.getElementById('star1').className = 'big-star lit bounce'; }, 300); }
+  if (stars >= 2) { setTimeout(function() { document.getElementById('star2').className = 'big-star lit bounce'; }, 650); }
+  if (stars >= 3) { setTimeout(function() { document.getElementById('star3').className = 'big-star lit bounce'; }, 1000); }
 }
-
-function goHome() {
-  clearInterval(timerHandle);
-  showScreen('home');
-}
-
-// Button wiring
-document.getElementById('back-btn').addEventListener('click', goHome);
+ 
+// ══ Button wiring ══
+document.getElementById('back-to-grades').addEventListener('click', function() { showScreen('grade-screen'); });
+document.getElementById('game-back-btn').addEventListener('click', function() { clearInterval(timerHandle); drillRunning = false; showScreen('op-screen'); });
 document.getElementById('go-btn').addEventListener('click', submitAnswer);
-document.getElementById('replay-btn').addEventListener('click', function() { startSkill(current); });
-document.getElementById('home-btn2').addEventListener('click', goHome);
-
+document.getElementById('drill-again-btn').addEventListener('click', function() { startDrill(selectedOp); });
+document.getElementById('change-op-btn').addEventListener('click', function() { showScreen('op-screen'); });
+document.getElementById('change-grade-btn').addEventListener('click', function() { showScreen('grade-screen'); });
+ 
 document.getElementById('numpad').addEventListener('click', function(e) {
   var btn = e.target.closest('.np');
   if (!btn) return;
   var n = btn.getAttribute('data-n');
   var inp = document.getElementById('ans-input');
-  if (n === 'del') {
-    inp.value = inp.value.slice(0, -1);
-  } else if (n === 'neg') {
-    if (inp.value.charAt(0) !== '-') {
-      inp.value = '-' + inp.value;
-    }
-  } else {
-    inp.value = inp.value + n;
-  }
+  if (n === 'del') { inp.value = inp.value.slice(0, -1); }
+  else if (n === 'neg') { if (inp.value.charAt(0) !== '-') { inp.value = '-' + inp.value; } }
+  else { inp.value = inp.value + n; }
   inp.focus();
 });
-
+ 
 document.addEventListener('keydown', function(e) {
-  if (document.getElementById('game').classList.contains('active')) {
-    if (e.key === 'Enter') { submitAnswer(); }
-  }
+  if (document.getElementById('game-screen').classList.contains('active') && e.key === 'Enter') { submitAnswer(); }
 });
-
-renderHome();
+ 
+renderGrades();
 </script>
 </body>
 </html>

@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <title>MathBlitz</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -12,196 +14,263 @@
   --red:#EF4444; --amber:#F59E0B;
   --purple:#8B5CF6; --purple-dark:#6D28D9;
   --bg:#F0F4FF; --text:#1E293B; --muted:#64748B; --border:#E2E8F0;
-  --radius:16px;
   --shadow:0 4px 24px rgba(0,0,0,0.08);
   --shadow-lg:0 8px 40px rgba(0,0,0,0.14);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-tap-highlight-color:transparent;}
-.screen{display:none;min-height:100vh;flex-direction:column;}
+html,body{height:100%;overflow:hidden;}
+body{
+  font-family:'Nunito',sans-serif;
+  background:var(--bg);color:var(--text);
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+  user-select:none;
+}
+
+/* ── Screens ── */
+.screen{display:none;height:100dvh;height:100vh;flex-direction:column;overflow:hidden;}
 .screen.active{display:flex;}
- 
-/* nav */
-.top-nav{background:white;border-bottom:1px solid var(--border);padding:0.85rem 1.1rem;display:flex;align-items:center;gap:0.75rem;flex-shrink:0;}
+
+/* ── Fullscreen button ── */
+.fs-btn{
+  position:fixed;top:12px;right:12px;z-index:999;
+  background:rgba(255,255,255,0.85);border:1.5px solid var(--border);
+  border-radius:10px;padding:6px 10px;cursor:pointer;
+  font-size:1rem;line-height:1;backdrop-filter:blur(6px);
+  box-shadow:var(--shadow);transition:background 0.15s;
+}
+.fs-btn:hover{background:white;}
+
+/* ══ GRADE SCREEN ══ */
+#grade-screen{
+  background:linear-gradient(160deg,#1E3A8A 0%,#3B82F6 55%,#60A5FA 100%);
+  align-items:center;overflow-y:auto;padding:1.5rem 1rem 2.5rem;
+}
+.hero{text-align:center;color:white;padding:1.5rem 0 1.25rem;}
+.hero h1{font-size:clamp(2.6rem,9vw,4.5rem);font-weight:900;line-height:1;text-shadow:0 4px 16px rgba(0,0,0,0.2);}
+.hero h1 span{color:#FDE68A;}
+.hero p{font-size:0.95rem;opacity:0.85;margin-top:0.4rem;}
+.grade-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:0.85rem;width:100%;max-width:560px;}
+.grade-card{background:white;border-radius:16px;padding:1.1rem 1.3rem;cursor:pointer;box-shadow:var(--shadow);border:2.5px solid transparent;transition:transform 0.14s,box-shadow 0.14s;display:flex;align-items:center;gap:0.85rem;}
+.grade-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg);}
+.grade-card:active{transform:scale(0.97);}
+.grade-emoji{font-size:1.9rem;flex-shrink:0;}
+.grade-name{font-weight:900;font-size:1rem;}
+.grade-desc{font-size:0.73rem;color:var(--muted);margin-top:2px;}
+
+/* ══ PICK SCREENS (op / mode / set) ══ */
+.pick-screen{overflow-y:auto;}
+.top-nav{background:white;border-bottom:1px solid var(--border);padding:0.8rem 1rem;display:flex;align-items:center;gap:0.7rem;flex-shrink:0;}
 .nav-back{background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--muted);padding:4px 8px;border-radius:8px;font-family:'Nunito',sans-serif;}
 .nav-back:hover{background:var(--bg);}
 .nav-info{flex:1;}
-.nav-title{font-weight:900;font-size:1rem;}
-.nav-sub{font-size:0.72rem;color:var(--muted);}
- 
-/* pick screens */
-.pick-body{flex:1;display:flex;flex-direction:column;align-items:center;padding:1.5rem 1rem 3rem;overflow-y:auto;}
-.pick-heading{text-align:center;margin-bottom:1.5rem;}
-.pick-heading h2{font-weight:900;font-size:1.6rem;}
-.pick-heading p{color:var(--muted);font-size:0.86rem;margin-top:4px;}
- 
-/* grade screen */
-#grade-screen{background:linear-gradient(160deg,#1E3A8A 0%,#3B82F6 60%,#60A5FA 100%);align-items:center;padding:2rem 1rem 3rem;}
-.hero{text-align:center;color:white;padding:2rem 0 2rem;}
-.hero h1{font-size:clamp(2.8rem,9vw,4.5rem);font-weight:900;line-height:1;text-shadow:0 4px 16px rgba(0,0,0,0.2);}
-.hero h1 span{color:#FDE68A;}
-.hero p{font-size:1rem;opacity:0.85;margin-top:0.5rem;}
-.grade-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:0.9rem;width:100%;max-width:580px;}
-.grade-card{background:white;border-radius:var(--radius);padding:1.25rem 1.4rem;cursor:pointer;box-shadow:var(--shadow);border:2.5px solid transparent;transition:transform 0.14s,box-shadow 0.14s,border-color 0.14s;display:flex;align-items:center;gap:0.9rem;}
-.grade-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:rgba(255,255,255,0.8);}
-.grade-card:active{transform:scale(0.97);}
-.grade-emoji{font-size:2rem;flex-shrink:0;}
-.grade-name{font-weight:900;font-size:1rem;}
-.grade-desc{font-size:0.75rem;color:var(--muted);margin-top:2px;}
- 
-/* op cards */
-.op-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.9rem;width:100%;max-width:520px;}
-.op-card{background:white;border-radius:var(--radius);padding:1.5rem 1rem;cursor:pointer;box-shadow:var(--shadow);border:2.5px solid var(--border);text-align:center;transition:transform 0.14s,box-shadow 0.14s,border-color 0.14s;}
-.op-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);}
+.nav-title{font-weight:900;font-size:0.95rem;}
+.nav-sub{font-size:0.7rem;color:var(--muted);}
+.pick-body{flex:1;padding:1.25rem 1rem 2rem;display:flex;flex-direction:column;align-items:center;overflow-y:auto;}
+
+.op-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.85rem;width:100%;max-width:500px;}
+.op-card{background:white;border-radius:16px;padding:1.4rem 1rem;cursor:pointer;box-shadow:var(--shadow);border:2.5px solid var(--border);text-align:center;transition:transform 0.14s,box-shadow 0.14s;}
+.op-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg);}
 .op-card:active{transform:scale(0.97);}
-.op-symbol{font-size:2.2rem;font-weight:900;margin-bottom:0.35rem;}
-.op-name{font-weight:800;font-size:0.95rem;}
-.op-pr{font-size:0.72rem;color:var(--muted);margin-top:4px;}
+.op-symbol{font-size:2.1rem;font-weight:900;margin-bottom:0.3rem;}
+.op-name{font-weight:800;font-size:0.92rem;}
+.op-pr{font-size:0.7rem;color:var(--muted);margin-top:4px;}
 .op-pr .prv{color:var(--amber);font-weight:800;}
-.op-stars{font-size:12px;margin-top:4px;}
-.op-star{opacity:0.2;}
-.op-star.e{opacity:1;}
- 
-/* mode cards */
-.mode-grid{display:grid;grid-template-columns:1fr;gap:1rem;width:100%;max-width:480px;}
-.mode-card{background:white;border-radius:var(--radius);padding:1.5rem 1.5rem;cursor:pointer;box-shadow:var(--shadow);border:2.5px solid var(--border);display:flex;gap:1rem;align-items:flex-start;transition:transform 0.14s,box-shadow 0.14s,border-color 0.14s;}
-.mode-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);}
+.op-stars{font-size:12px;margin-top:3px;}
+.op-star{opacity:0.2;} .op-star.e{opacity:1;}
+
+.mode-grid{display:grid;grid-template-columns:1fr;gap:0.9rem;width:100%;max-width:460px;}
+.mode-card{background:white;border-radius:16px;padding:1.4rem;cursor:pointer;box-shadow:var(--shadow);border:2.5px solid var(--border);display:flex;gap:0.9rem;align-items:flex-start;transition:transform 0.14s,box-shadow 0.14s;}
+.mode-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg);}
 .mode-card:active{transform:scale(0.97);}
-.mode-card.blitz{border-color:#BFDBFE;background:linear-gradient(135deg,#EFF6FF 0%,#fff 60%);}
-.mode-card.master{border-color:#DDD6FE;background:linear-gradient(135deg,#F5F3FF 0%,#fff 60%);}
-.mode-icon{font-size:2.2rem;flex-shrink:0;margin-top:2px;}
-.mode-body{}
-.mode-tag{display:inline-block;font-size:10px;font-weight:800;padding:2px 9px;border-radius:99px;margin-bottom:5px;}
-.tag-b{background:#DBEAFE;color:#1E40AF;}
-.tag-m{background:#EDE9FE;color:#4C1D95;}
-.mode-name{font-weight:900;font-size:1.1rem;margin-bottom:4px;}
-.mode-name.blue{color:var(--blue-dark);}
-.mode-name.purple{color:var(--purple-dark);}
-.mode-desc{font-size:0.8rem;color:var(--muted);line-height:1.45;}
- 
-/* set grid */
-.set-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:8px;width:100%;max-width:520px;}
-.set-card{background:white;border-radius:12px;padding:0.8rem 0.4rem;cursor:pointer;box-shadow:var(--shadow);border:2px solid var(--border);text-align:center;transition:transform 0.12s,box-shadow 0.12s,border-color 0.12s;}
+.mode-card.blitz{border-color:#BFDBFE;background:linear-gradient(135deg,#EFF6FF,white);}
+.mode-card.master{border-color:#DDD6FE;background:linear-gradient(135deg,#F5F3FF,white);}
+.mode-icon{font-size:2rem;flex-shrink:0;margin-top:2px;}
+.mode-tag{display:inline-block;font-size:10px;font-weight:800;padding:2px 9px;border-radius:99px;margin-bottom:4px;}
+.tag-b{background:#DBEAFE;color:#1E40AF;} .tag-m{background:#EDE9FE;color:#4C1D95;}
+.mode-name{font-weight:900;font-size:1.05rem;margin-bottom:3px;}
+.mode-name.blue{color:var(--blue-dark);} .mode-name.purple{color:var(--purple-dark);}
+.mode-desc{font-size:0.78rem;color:var(--muted);line-height:1.45;}
+
+.set-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:7px;width:100%;max-width:500px;}
+.set-card{background:white;border-radius:12px;padding:0.75rem 0.4rem;cursor:pointer;box-shadow:var(--shadow);border:2px solid var(--border);text-align:center;transition:transform 0.12s,box-shadow 0.12s;}
 .set-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg);}
 .set-card:active{transform:scale(0.95);}
 .set-sym{font-size:1rem;font-weight:900;}
-.set-pr{font-size:10px;color:var(--muted);margin-top:3px;}
+.set-pr{font-size:9px;color:var(--muted);margin-top:3px;}
 .set-pr strong{color:var(--amber);}
-.set-stars{font-size:11px;margin-top:2px;}
-.set-star{opacity:0.2;}
-.set-star.e{opacity:1;}
- 
-/* game screen */
+.set-stars{font-size:10px;margin-top:2px;}
+.set-star{opacity:0.2;} .set-star.e{opacity:1;}
+
+/* ══ GAME SCREEN ══ */
 #game-screen{background:var(--bg);}
-.game-stats-row{background:white;border-bottom:1px solid var(--border);padding:0.6rem 1rem;display:flex;gap:6px;}
-.gs{background:var(--bg);border-radius:10px;padding:5px 8px;text-align:center;flex:1;}
-.gs-val{font-weight:900;font-size:1rem;}
-.gs-lbl{font-size:9px;color:var(--muted);}
-.gs.hl .gs-val{color:var(--blue);}
-.gs.hl .gs-val.neg{color:var(--red);}
-.gs.hl-p .gs-val{color:var(--purple-dark);}
- 
-.game-body{flex:1;display:flex;flex-direction:column;align-items:center;padding:1rem 1rem 0.75rem;max-width:480px;margin:0 auto;width:100%;}
- 
-/* blitz ring */
-.timer-ring{position:relative;width:80px;height:80px;margin-bottom:0.85rem;flex-shrink:0;}
-.timer-ring svg{transform:rotate(-90deg);}
+
+.game-header{
+  background:white;border-bottom:1px solid var(--border);
+  padding:0.6rem 1rem;display:flex;align-items:center;gap:0.6rem;flex-shrink:0;
+}
+.game-header .nav-back{font-size:1.2rem;}
+.game-header-info{flex:1;}
+.game-header-title{font-weight:900;font-size:0.88rem;}
+.game-header-sub{font-size:0.65rem;color:var(--muted);}
+.game-header-stats{display:flex;gap:5px;}
+.ghstat{background:var(--bg);border-radius:8px;padding:4px 8px;text-align:center;min-width:42px;}
+.ghstat-val{font-weight:900;font-size:0.9rem;}
+.ghstat-lbl{font-size:8px;color:var(--muted);}
+
+/* Game body: question + numpad fill the screen */
+.game-body{
+  flex:1;display:flex;flex-direction:column;
+  padding:0.75rem 0.75rem 0.5rem;
+  overflow:hidden;
+}
+
+/* Question card */
+.q-card{
+  background:white;border-radius:20px;box-shadow:var(--shadow-lg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border:3px solid transparent;transition:border-color 0.15s;
+  flex-shrink:0;padding:0.85rem 1rem;margin-bottom:0.6rem;
+  min-height:100px;
+}
+.q-card.cf{border-color:var(--green);}
+.q-card.wf{border-color:var(--red);}
+.q-card.rf{border-color:var(--amber);}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-10px)}40%{transform:translateX(10px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
+.q-card.shake{animation:shake 0.3s ease;}
+.q-card.pop{animation:pop 0.2s ease;}
+
+.q-meta{font-size:0.7rem;color:var(--muted);margin-bottom:4px;font-weight:700;}
+.q-equation{font-weight:900;font-size:clamp(2.4rem,8vw,4rem);letter-spacing:-1px;line-height:1;}
+.q-answer-display{
+  font-weight:900;font-size:clamp(2rem,7vw,3.2rem);color:var(--blue);
+  min-height:1.2em;letter-spacing:-1px;
+  border-bottom:3px solid var(--border);
+  padding:0 0.5rem;min-width:80px;text-align:center;
+  margin-top:0.3rem;transition:border-color 0.15s;
+}
+.q-answer-display.has-val{border-color:var(--blue);}
+.q-reveal{font-weight:800;font-size:1.1rem;margin-top:4px;min-height:24px;}
+.q-reveal.c{color:var(--green-dark);} .q-reveal.w{color:var(--red);} .q-reveal.r{color:var(--amber);}
+
+/* Timer / stopwatch row */
+.timer-row{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:0.6rem;flex-shrink:0;gap:0.5rem;
+}
+.blitz-ring-wrap{position:relative;width:56px;height:56px;flex-shrink:0;}
+.blitz-ring-wrap svg{transform:rotate(-90deg);}
 #blitz-arc{stroke:var(--blue);stroke-linecap:round;transition:stroke 0.3s;}
-#blitz-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.6rem;}
- 
-/* master stopwatch */
-.stopwatch{text-align:center;margin-bottom:0.85rem;}
-.sw-time{font-weight:900;font-size:2.8rem;letter-spacing:1px;line-height:1;font-variant-numeric:tabular-nums;}
-.sw-penalty{font-size:0.8rem;color:var(--red);font-weight:800;min-height:18px;margin-top:2px;}
- 
-/* blitz score bar */
-.blitz-bar-wrap{width:100%;margin-bottom:0.85rem;}
-.blitz-bar-lbl{display:flex;justify-content:space-between;font-size:0.78rem;color:var(--muted);margin-bottom:4px;}
-.blitz-bar-lbl .bsc{font-weight:900;color:var(--text);font-size:0.9rem;}
-.blitz-bar-lbl .bpr strong{color:var(--amber);}
-.blitz-bar-bg{height:7px;background:var(--border);border-radius:99px;overflow:hidden;}
+#blitz-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.1rem;}
+.sw-display{font-weight:900;font-size:2rem;letter-spacing:1px;color:var(--purple-dark);font-variant-numeric:tabular-nums;}
+.sw-penalty-flash{font-size:0.75rem;color:var(--red);font-weight:800;min-height:16px;}
+
+.score-bar-wrap{flex:1;}
+.score-bar-lbl{display:flex;justify-content:space-between;font-size:0.72rem;color:var(--muted);margin-bottom:3px;}
+.score-bar-lbl .sc{font-weight:900;color:var(--text);font-size:0.82rem;}
+.score-bar-lbl .pr strong{color:var(--amber);}
+.bar-bg{height:7px;background:var(--border);border-radius:99px;overflow:hidden;}
 #blitz-bar{height:100%;background:var(--green);border-radius:99px;transition:width 0.25s,background 0.3s;}
- 
-/* master progress bar */
-.master-bar-wrap{width:100%;margin-bottom:0.85rem;}
-.master-bar-lbl{display:flex;justify-content:space-between;font-size:0.78rem;color:var(--muted);margin-bottom:4px;}
-.master-bar-lbl strong{color:var(--text);}
-.master-bar-bg{height:7px;background:var(--border);border-radius:99px;overflow:hidden;}
+
+.master-prog-wrap{flex:1;}
+.master-prog-lbl{display:flex;justify-content:space-between;font-size:0.72rem;color:var(--muted);margin-bottom:3px;}
+.master-prog-lbl strong{color:var(--text);}
+.mbar-bg{height:7px;background:var(--border);border-radius:99px;overflow:hidden;}
 #master-bar{height:100%;background:var(--purple);border-radius:99px;transition:width 0.3s;}
- 
-/* flashcard */
-.flashcard{background:white;border-radius:22px;box-shadow:var(--shadow-lg);width:100%;padding:1.5rem 1.25rem;text-align:center;margin-bottom:0.85rem;border:3px solid transparent;transition:border-color 0.15s;flex-shrink:0;}
-.flashcard.cf{border-color:var(--green);}
-.flashcard.wf{border-color:var(--red);}
-.flashcard.rf{border-color:var(--amber);}
-@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
-@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.04)}100%{transform:scale(1)}}
-.flashcard.shake{animation:shake 0.3s ease;}
-.flashcard.pop{animation:pop 0.2s ease;}
-.q-label{font-size:0.72rem;color:var(--muted);margin-bottom:4px;}
-.q-text{font-weight:900;font-size:clamp(1.9rem,9vw,3rem);letter-spacing:-1px;margin-bottom:0.4rem;}
-.q-reveal{font-weight:800;font-size:1.25rem;min-height:32px;display:flex;align-items:center;justify-content:center;gap:5px;}
-.q-reveal.c{color:var(--green-dark);}
-.q-reveal.w{color:var(--red);}
-.q-reveal.r{color:var(--amber);}
- 
-/* input */
-.answer-row{display:flex;gap:8px;width:100%;margin-bottom:0.7rem;}
-#ans-input{flex:1;font-family:'Nunito',sans-serif;font-weight:900;font-size:1.7rem;text-align:center;padding:0.55rem 0.5rem;border:2.5px solid var(--border);border-radius:14px;outline:none;background:white;color:var(--text);-moz-appearance:textfield;appearance:textfield;transition:border-color 0.15s;}
-#ans-input::-webkit-inner-spin-button,#ans-input::-webkit-outer-spin-button{display:none;}
-#ans-input:focus{border-color:var(--blue);}
-#go-btn{background:var(--blue);color:white;border:none;border-radius:14px;padding:0.55rem 1.15rem;font-family:'Nunito',sans-serif;font-weight:900;font-size:1.05rem;cursor:pointer;transition:background 0.15s,transform 0.1s;}
-#go-btn:hover{background:var(--blue-dark);}
-#go-btn:active{transform:scale(0.95);}
-#go-btn.mp{background:var(--purple);}
-#go-btn.mp:hover{background:var(--purple-dark);}
- 
-/* numpad */
-.numpad{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;width:100%;}
-.np{background:white;border:1.5px solid var(--border);border-radius:11px;padding:12px 0;font-family:'Nunito',sans-serif;font-weight:700;font-size:1.1rem;cursor:pointer;text-align:center;color:var(--text);user-select:none;transition:background 0.1s;}
-.np:hover{background:var(--bg);}
-.np:active{transform:scale(0.93);background:var(--border);}
- 
-/* results */
-#results-screen{background:var(--bg);align-items:center;justify-content:center;padding:2rem 1rem;}
-.results-card{background:white;border-radius:26px;box-shadow:var(--shadow-lg);padding:2rem 1.75rem;width:100%;max-width:420px;text-align:center;}
-.res-tag{display:inline-block;font-size:11px;font-weight:800;padding:2px 10px;border-radius:99px;margin-bottom:0.4rem;}
-.tag-rb{background:#DBEAFE;color:#1E40AF;}
-.tag-rm{background:#EDE9FE;color:#4C1D95;}
-.res-context{font-size:0.8rem;color:var(--muted);margin-bottom:0.15rem;}
-.res-big{font-weight:900;font-size:2.2rem;line-height:1;margin:0.35rem 0 0.1rem;}
-.res-big.pos{color:var(--green-dark);}
-.res-big.neg{color:var(--red);}
-.res-big.zer{color:var(--muted);}
-.res-big.tim{color:var(--purple-dark);}
-.res-sub{font-size:0.82rem;color:var(--muted);margin-bottom:0.35rem;}
-.rec-badge{display:inline-block;background:#FEF3C7;color:#92400E;font-weight:800;font-size:0.8rem;padding:3px 12px;border-radius:99px;margin:0.35rem 0;}
-.stars-row{display:flex;justify-content:center;gap:7px;margin:0.8rem 0;}
+
+/* ── BIG FRIENDLY NUMPAD ── */
+.numpad-wrap{
+  flex:1;display:flex;flex-direction:column;gap:0;
+  min-height:0;
+}
+.numpad{
+  flex:1;display:grid;
+  grid-template-columns:repeat(3,1fr);
+  grid-template-rows:repeat(4,1fr);
+  gap:8px;
+  min-height:0;
+}
+/* Special last row: 0 wide, neg, del */
+.np{
+  background:white;
+  border:2px solid var(--border);
+  border-radius:16px;
+  font-family:'Nunito',sans-serif;
+  font-weight:900;
+  font-size:clamp(1.4rem,5vw,2rem);
+  cursor:pointer;
+  text-align:center;
+  color:var(--text);
+  display:flex;align-items:center;justify-content:center;
+  transition:background 0.08s,transform 0.08s,border-color 0.08s;
+  box-shadow:0 2px 8px rgba(0,0,0,0.06);
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+  /* prevent text selection on tap */
+  user-select:none;
+}
+.np:hover{background:#F8FAFF;border-color:#BFDBFE;}
+.np:active{transform:scale(0.91);background:#DBEAFE;border-color:var(--blue);}
+.np.zero{grid-column:span 1;}
+.np.del-btn{background:#FEF2F2;border-color:#FECACA;color:var(--red);font-size:clamp(1.1rem,4vw,1.6rem);}
+.np.del-btn:active{background:#FEE2E2;}
+.np.neg-btn{background:#F8FAFF;color:var(--muted);font-size:clamp(1.2rem,4vw,1.7rem);}
+.go-btn{
+  background:var(--blue);color:white;border:none;border-radius:16px;
+  font-family:'Nunito',sans-serif;font-weight:900;
+  font-size:clamp(1.1rem,4vw,1.5rem);
+  cursor:pointer;padding:0;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 12px rgba(59,130,246,0.35);
+  transition:background 0.12s,transform 0.08s;
+  touch-action:manipulation;
+  margin-top:8px;
+  height:clamp(52px,8vw,72px);
+  flex-shrink:0;
+}
+.go-btn:hover{background:var(--blue-dark);}
+.go-btn:active{transform:scale(0.96);}
+.go-btn.purple{background:var(--purple);box-shadow:0 4px 12px rgba(139,92,246,0.35);}
+.go-btn.purple:hover{background:var(--purple-dark);}
+
+/* ══ RESULTS ══ */
+#results-screen{background:var(--bg);align-items:center;justify-content:center;overflow-y:auto;padding:1.5rem 1rem;}
+.results-card{background:white;border-radius:24px;box-shadow:var(--shadow-lg);padding:1.75rem 1.5rem;width:100%;max-width:400px;text-align:center;}
+.res-tag{display:inline-block;font-size:11px;font-weight:800;padding:2px 10px;border-radius:99px;margin-bottom:0.35rem;}
+.tag-rb{background:#DBEAFE;color:#1E40AF;} .tag-rm{background:#EDE9FE;color:#4C1D95;}
+.res-context{font-size:0.78rem;color:var(--muted);margin-bottom:0.15rem;}
+.res-big{font-weight:900;font-size:2.2rem;line-height:1;margin:0.3rem 0 0.1rem;}
+.res-big.pos{color:var(--green-dark);} .res-big.neg{color:var(--red);} .res-big.zer{color:var(--muted);} .res-big.tim{color:var(--purple-dark);}
+.res-sub{font-size:0.8rem;color:var(--muted);margin-bottom:0.3rem;}
+.rec-badge{display:inline-block;background:#FEF3C7;color:#92400E;font-weight:800;font-size:0.78rem;padding:3px 12px;border-radius:99px;margin:0.3rem 0;}
+.stars-row{display:flex;justify-content:center;gap:7px;margin:0.75rem 0;}
 .big-star{font-size:2.8rem;filter:grayscale(1) opacity(0.2);transform:scale(0.85);transition:filter 0.4s,transform 0.4s;}
 .big-star.lit{filter:none;transform:scale(1.05);}
 @keyframes starPop{0%{transform:scale(0.4)}60%{transform:scale(1.25)}80%{transform:scale(0.95)}100%{transform:scale(1.05)}}
 .big-star.bounce{animation:starPop 0.45s cubic-bezier(0.36,0.07,0.19,0.97) forwards;}
-.res-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:0.8rem 0;}
-.rs{background:var(--bg);border-radius:11px;padding:0.6rem 0.4rem;}
-.rs-val{font-weight:900;font-size:1.2rem;}
-.rs-lbl{font-size:10px;color:var(--muted);margin-top:2px;}
-.res-msg{font-size:0.86rem;color:var(--muted);margin-bottom:1.2rem;line-height:1.5;}
-.res-btns{display:flex;flex-direction:column;gap:8px;}
-.btn-p{background:var(--blue);color:white;border:none;border-radius:13px;padding:0.88rem;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.97rem;cursor:pointer;width:100%;transition:background 0.15s;}
+.res-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:0.75rem 0;}
+.rs{background:var(--bg);border-radius:11px;padding:0.55rem 0.3rem;}
+.rs-val{font-weight:900;font-size:1.15rem;}
+.rs-lbl{font-size:9px;color:var(--muted);margin-top:2px;}
+.res-msg{font-size:0.84rem;color:var(--muted);margin-bottom:1.1rem;line-height:1.5;}
+.res-btns{display:flex;flex-direction:column;gap:7px;}
+.btn-p{background:var(--blue);color:white;border:none;border-radius:13px;padding:0.85rem;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.95rem;cursor:pointer;width:100%;transition:background 0.15s;}
 .btn-p:hover{background:var(--blue-dark);}
-.btn-p.pur{background:var(--purple);}
-.btn-p.pur:hover{background:var(--purple-dark);}
-.btn-s{background:var(--bg);color:var(--text);border:1.5px solid var(--border);border-radius:13px;padding:0.78rem;font-family:'Nunito',sans-serif;font-weight:700;font-size:0.91rem;cursor:pointer;width:100%;}
+.btn-p.pur{background:var(--purple);} .btn-p.pur:hover{background:var(--purple-dark);}
+.btn-s{background:var(--bg);color:var(--text);border:1.5px solid var(--border);border-radius:13px;padding:0.75rem;font-family:'Nunito',sans-serif;font-weight:700;font-size:0.89rem;cursor:pointer;width:100%;}
 .btn-s:hover{background:var(--border);}
- 
-@media(max-width:380px){
-  .game-stats-row .gs:nth-child(n+4){display:none;}
-  .np{padding:10px 0;}
+
+@media(max-width:360px){
+  .game-header-stats{display:none;}
+  .numpad{gap:5px;}
 }
 </style>
 </head>
 <body>
- 
+
+<button class="fs-btn" id="fs-btn" title="Fullscreen">&#x26F6;</button>
+
 <!-- ══ 1. GRADE ══ -->
 <div id="grade-screen" class="screen active">
   <div class="hero">
@@ -210,812 +279,589 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
   </div>
   <div class="grade-grid" id="grade-grid"></div>
 </div>
- 
+
 <!-- ══ 2. OPERATION ══ -->
-<div id="op-screen" class="screen">
+<div id="op-screen" class="screen pick-screen">
   <div class="top-nav">
     <button class="nav-back" id="op-back">&#8592;</button>
-    <div class="nav-info"><div class="nav-title" id="op-nav-title">Choose an operation</div><div class="nav-sub" id="op-nav-sub"></div></div>
+    <div class="nav-info"><div class="nav-title" id="op-nav-title"></div><div class="nav-sub">Choose an operation</div></div>
   </div>
-  <div class="pick-body">
-    <div class="op-grid" id="op-grid"></div>
-  </div>
+  <div class="pick-body"><div class="op-grid" id="op-grid"></div></div>
 </div>
- 
+
 <!-- ══ 3. MODE ══ -->
-<div id="mode-screen" class="screen">
+<div id="mode-screen" class="screen pick-screen">
   <div class="top-nav">
     <button class="nav-back" id="mode-back">&#8592;</button>
-    <div class="nav-info"><div class="nav-title" id="mode-nav-title">Choose a mode</div><div class="nav-sub" id="mode-nav-sub"></div></div>
+    <div class="nav-info"><div class="nav-title" id="mode-nav-title"></div><div class="nav-sub">Choose a mode</div></div>
   </div>
-  <div class="pick-body">
-    <div class="mode-grid" id="mode-grid"></div>
-  </div>
+  <div class="pick-body"><div class="mode-grid" id="mode-grid"></div></div>
 </div>
- 
-<!-- ══ 4. SET (Master It only) ══ -->
-<div id="set-screen" class="screen">
+
+<!-- ══ 4. SET ══ -->
+<div id="set-screen" class="screen pick-screen">
   <div class="top-nav">
     <button class="nav-back" id="set-back">&#8592;</button>
-    <div class="nav-info"><div class="nav-title" id="set-nav-title">Choose a set</div><div class="nav-sub" id="set-nav-sub"></div></div>
+    <div class="nav-info"><div class="nav-title" id="set-nav-title"></div><div class="nav-sub">Choose a set</div></div>
   </div>
-  <div class="pick-body">
-    <div class="set-grid" id="set-grid"></div>
-  </div>
+  <div class="pick-body"><div class="set-grid" id="set-grid"></div></div>
 </div>
- 
+
 <!-- ══ 5. GAME ══ -->
 <div id="game-screen" class="screen">
-  <div class="top-nav">
+  <div class="game-header">
     <button class="nav-back" id="game-back">&#8592;</button>
-    <div class="nav-info"><div class="nav-title" id="game-nav-title"></div><div class="nav-sub" id="game-nav-sub"></div></div>
+    <div class="game-header-info">
+      <div class="game-header-title" id="ghdr-title"></div>
+      <div class="game-header-sub" id="ghdr-sub"></div>
+    </div>
+    <div class="game-header-stats" id="ghdr-stats"></div>
   </div>
-  <div class="game-stats-row" id="game-stats-row"></div>
+
   <div class="game-body">
- 
-    <!-- Blitz timer (shown in blitz mode) -->
-    <div class="timer-ring" id="blitz-timer-wrap">
-      <svg width="80" height="80" viewBox="0 0 80 80">
-        <circle cx="40" cy="40" r="34" fill="none" stroke="#E2E8F0" stroke-width="7"/>
-        <circle id="blitz-arc" cx="40" cy="40" r="34" fill="none" stroke="#3B82F6" stroke-width="7" stroke-linecap="round" stroke-dasharray="214" stroke-dashoffset="0"/>
-      </svg>
-      <div id="blitz-num">60</div>
+
+    <!-- Timer / progress row -->
+    <div class="timer-row" id="timer-row">
+      <!-- populated by JS -->
     </div>
- 
-    <!-- Master stopwatch (shown in master mode) -->
-    <div class="stopwatch" id="master-sw-wrap">
-      <div class="sw-time" id="sw-time">0:00.0</div>
-      <div class="sw-penalty" id="sw-penalty"></div>
-    </div>
- 
-    <!-- Blitz score bar -->
-    <div class="blitz-bar-wrap" id="blitz-bar-wrap">
-      <div class="blitz-bar-lbl">
-        <span>score: <span class="bsc" id="bsc">0</span></span>
-        <span class="bpr" id="bpr">PR: <strong>&#8212;</strong></span>
-      </div>
-      <div class="blitz-bar-bg"><div id="blitz-bar" style="width:0%"></div></div>
-    </div>
- 
-    <!-- Master progress bar -->
-    <div class="master-bar-wrap" id="master-bar-wrap">
-      <div class="master-bar-lbl">
-        <span>progress: <strong id="m-done">0</strong> / <strong id="m-total">0</strong></span>
-        <span id="m-misses-lbl">misses: <strong id="m-misses">0</strong></span>
-      </div>
-      <div class="master-bar-bg"><div id="master-bar" style="width:0%"></div></div>
-    </div>
- 
-    <div class="flashcard" id="flashcard">
-      <div class="q-label" id="q-label"></div>
-      <div class="q-text" id="q-text"></div>
+
+    <!-- Question card -->
+    <div class="q-card" id="q-card">
+      <div class="q-meta" id="q-meta"></div>
+      <div class="q-equation" id="q-eq"></div>
+      <div class="q-answer-display" id="q-disp"></div>
       <div class="q-reveal" id="q-reveal"></div>
     </div>
- 
-    <div class="answer-row">
-      <input id="ans-input" type="number" inputmode="numeric" placeholder="?" autocomplete="off">
-      <button id="go-btn">Go</button>
+
+    <!-- Numpad -->
+    <div class="numpad-wrap">
+      <div class="numpad" id="numpad">
+        <button class="np" data-n="7">7</button>
+        <button class="np" data-n="8">8</button>
+        <button class="np" data-n="9">9</button>
+        <button class="np" data-n="4">4</button>
+        <button class="np" data-n="5">5</button>
+        <button class="np" data-n="6">6</button>
+        <button class="np" data-n="1">1</button>
+        <button class="np" data-n="2">2</button>
+        <button class="np" data-n="3">3</button>
+        <button class="np neg-btn" data-n="neg">&#8722;</button>
+        <button class="np zero" data-n="0">0</button>
+        <button class="np del-btn" data-n="del">&#9003;</button>
+      </div>
+      <button class="go-btn" id="go-btn">Check &#10003;</button>
     </div>
- 
-    <div class="numpad">
-      <button class="np" data-n="7">7</button>
-      <button class="np" data-n="8">8</button>
-      <button class="np" data-n="9">9</button>
-      <button class="np" data-n="del">&#9003;</button>
-      <button class="np" data-n="4">4</button>
-      <button class="np" data-n="5">5</button>
-      <button class="np" data-n="6">6</button>
-      <button class="np" data-n="0">0</button>
-      <button class="np" data-n="1">1</button>
-      <button class="np" data-n="2">2</button>
-      <button class="np" data-n="3">3</button>
-      <button class="np" data-n="neg">&#8722;</button>
-    </div>
+
   </div>
 </div>
- 
+
 <!-- ══ 6. RESULTS ══ -->
 <div id="results-screen" class="screen">
-  <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:2rem 1rem;">
-    <div class="results-card">
-      <div class="res-tag" id="res-tag"></div>
-      <div class="res-context" id="res-context"></div>
-      <div class="res-big" id="res-big"></div>
-      <div class="res-sub" id="res-sub"></div>
-      <div id="rec-wrap"></div>
-      <div class="stars-row">
-        <div class="big-star" id="star1">&#11088;</div>
-        <div class="big-star" id="star2">&#11088;</div>
-        <div class="big-star" id="star3">&#11088;</div>
-      </div>
-      <div class="res-stats">
-        <div class="rs"><div class="rs-val" id="rs1">&#8212;</div><div class="rs-lbl" id="rs1l">accuracy</div></div>
-        <div class="rs"><div class="rs-val" id="rs2">&#8212;</div><div class="rs-lbl" id="rs2l">best streak</div></div>
-        <div class="rs"><div class="rs-val" id="rs3">&#8212;</div><div class="rs-lbl" id="rs3l">record</div></div>
-      </div>
-      <div class="res-msg" id="res-msg"></div>
-      <div class="res-btns">
-        <button class="btn-p" id="again-btn">Go again &#8635;</button>
-        <button class="btn-s" id="change-set-btn" style="display:none">Change set</button>
-        <button class="btn-s" id="change-mode-btn">Change mode</button>
-        <button class="btn-s" id="change-grade-btn">Change grade</button>
-      </div>
+  <div class="results-card">
+    <div class="res-tag" id="res-tag"></div>
+    <div class="res-context" id="res-context"></div>
+    <div class="res-big" id="res-big"></div>
+    <div class="res-sub" id="res-sub"></div>
+    <div id="rec-wrap"></div>
+    <div class="stars-row">
+      <div class="big-star" id="star1">&#11088;</div>
+      <div class="big-star" id="star2">&#11088;</div>
+      <div class="big-star" id="star3">&#11088;</div>
+    </div>
+    <div class="res-stats">
+      <div class="rs"><div class="rs-val" id="rs1">&#8212;</div><div class="rs-lbl" id="rs1l">accuracy</div></div>
+      <div class="rs"><div class="rs-val" id="rs2">&#8212;</div><div class="rs-lbl" id="rs2l">best streak</div></div>
+      <div class="rs"><div class="rs-val" id="rs3">&#8212;</div><div class="rs-lbl" id="rs3l">record</div></div>
+    </div>
+    <div class="res-msg" id="res-msg"></div>
+    <div class="res-btns">
+      <button class="btn-p" id="again-btn">Go again &#8635;</button>
+      <button class="btn-s" id="change-set-btn" style="display:none">Change set</button>
+      <button class="btn-s" id="change-mode-btn">Change mode</button>
+      <button class="btn-s" id="change-grade-btn">Change grade</button>
     </div>
   </div>
 </div>
- 
+
 <script>
-// ══════════════════════════════════════════
+// ════════════════════════════════════
 // DATA
-// ══════════════════════════════════════════
- 
-var GRADES = [
-  { id:'g1', name:'1st Grade', emoji:'&#x1F423;', desc:'Add & subtract to 20',
-    ops:[ {id:'g1+',op:'+',name:'Addition',    sym:'+',       bg:'#DBEAFE',tc:'#1E40AF',lo:1,hi:10},
-          {id:'g1-',op:'-',name:'Subtraction', sym:'&#8722;', bg:'#FCE7F3',tc:'#9D174D',lo:1,hi:10} ] },
-  { id:'g2', name:'2nd Grade', emoji:'&#x1F430;', desc:'Bigger numbers, intro ×',
-    ops:[ {id:'g2+',op:'+',name:'Addition',       sym:'+',       bg:'#DBEAFE',tc:'#1E40AF',lo:5,hi:25},
-          {id:'g2-',op:'-',name:'Subtraction',    sym:'&#8722;', bg:'#FCE7F3',tc:'#9D174D',lo:5,hi:25},
-          {id:'g2x',op:'x',name:'Multiplication', sym:'&times;', bg:'#D1FAE5',tc:'#065F46',lo:2,hi:5} ] },
-  { id:'g3', name:'3rd Grade', emoji:'&#x1F98A;', desc:'Times tables & intro ÷',
-    ops:[ {id:'g3+',op:'+',name:'Addition',       sym:'+',       bg:'#DBEAFE',tc:'#1E40AF',lo:10,hi:50},
-          {id:'g3-',op:'-',name:'Subtraction',    sym:'&#8722;', bg:'#FCE7F3',tc:'#9D174D',lo:10,hi:50},
-          {id:'g3x',op:'x',name:'Multiplication', sym:'&times;', bg:'#D1FAE5',tc:'#065F46',lo:2,hi:9},
-          {id:'g3/',op:'/',name:'Division',        sym:'&divide;',bg:'#FEF3C7',tc:'#92400E',lo:2,hi:5} ] },
-  { id:'g4', name:'4th Grade', emoji:'&#x1F98C;', desc:'Full tables & division',
-    ops:[ {id:'g4+',op:'+',name:'Addition',       sym:'+',       bg:'#DBEAFE',tc:'#1E40AF',lo:25,hi:99},
-          {id:'g4-',op:'-',name:'Subtraction',    sym:'&#8722;', bg:'#FCE7F3',tc:'#9D174D',lo:25,hi:99},
-          {id:'g4x',op:'x',name:'Multiplication', sym:'&times;', bg:'#D1FAE5',tc:'#065F46',lo:2,hi:12},
-          {id:'g4/',op:'/',name:'Division',        sym:'&divide;',bg:'#FEF3C7',tc:'#92400E',lo:2,hi:9} ] },
-  { id:'g5', name:'5th Grade', emoji:'&#x1F981;', desc:'All ops, bigger numbers',
-    ops:[ {id:'g5+',op:'+',name:'Addition',       sym:'+',       bg:'#DBEAFE',tc:'#1E40AF',lo:50,hi:999},
-          {id:'g5-',op:'-',name:'Subtraction',    sym:'&#8722;', bg:'#FCE7F3',tc:'#9D174D',lo:50,hi:999},
-          {id:'g5x',op:'x',name:'Multiplication', sym:'&times;', bg:'#D1FAE5',tc:'#065F46',lo:6,hi:12},
-          {id:'g5/',op:'/',name:'Division',        sym:'&divide;',bg:'#FEF3C7',tc:'#92400E',lo:2,hi:12} ] }
+// ════════════════════════════════════
+var GRADES=[
+  {id:'g1',name:'1st Grade',emoji:'&#x1F423;',desc:'Add & subtract to 20',
+   ops:[{id:'g1+',op:'+',name:'Addition',   sym:'+',       bg:'#DBEAFE',tc:'#1E40AF',lo:1,hi:10},
+        {id:'g1-',op:'-',name:'Subtraction',sym:'&#8722;', bg:'#FCE7F3',tc:'#9D174D',lo:1,hi:10}]},
+  {id:'g2',name:'2nd Grade',emoji:'&#x1F430;',desc:'Bigger numbers, intro \u00d7',
+   ops:[{id:'g2+',op:'+',name:'Addition',      sym:'+',       bg:'#DBEAFE',tc:'#1E40AF',lo:5,hi:25},
+        {id:'g2-',op:'-',name:'Subtraction',   sym:'&#8722;', bg:'#FCE7F3',tc:'#9D174D',lo:5,hi:25},
+        {id:'g2x',op:'x',name:'Multiplication',sym:'&times;', bg:'#D1FAE5',tc:'#065F46',lo:2,hi:5}]},
+  {id:'g3',name:'3rd Grade',emoji:'&#x1F98A;',desc:'Times tables & intro \u00f7',
+   ops:[{id:'g3+',op:'+',name:'Addition',      sym:'+',       bg:'#DBEAFE',tc:'#1E40AF',lo:10,hi:50},
+        {id:'g3-',op:'-',name:'Subtraction',   sym:'&#8722;', bg:'#FCE7F3',tc:'#9D174D',lo:10,hi:50},
+        {id:'g3x',op:'x',name:'Multiplication',sym:'&times;', bg:'#D1FAE5',tc:'#065F46',lo:2,hi:9},
+        {id:'g3/',op:'/',name:'Division',       sym:'&divide;',bg:'#FEF3C7',tc:'#92400E',lo:2,hi:5}]},
+  {id:'g4',name:'4th Grade',emoji:'&#x1F98C;',desc:'Full tables & division',
+   ops:[{id:'g4+',op:'+',name:'Addition',      sym:'+',       bg:'#DBEAFE',tc:'#1E40AF',lo:25,hi:99},
+        {id:'g4-',op:'-',name:'Subtraction',   sym:'&#8722;', bg:'#FCE7F3',tc:'#9D174D',lo:25,hi:99},
+        {id:'g4x',op:'x',name:'Multiplication',sym:'&times;', bg:'#D1FAE5',tc:'#065F46',lo:2,hi:12},
+        {id:'g4/',op:'/',name:'Division',       sym:'&divide;',bg:'#FEF3C7',tc:'#92400E',lo:2,hi:9}]},
+  {id:'g5',name:'5th Grade',emoji:'&#x1F981;',desc:'All ops, bigger numbers',
+   ops:[{id:'g5+',op:'+',name:'Addition',      sym:'+',       bg:'#DBEAFE',tc:'#1E40AF',lo:50,hi:999},
+        {id:'g5-',op:'-',name:'Subtraction',   sym:'&#8722;', bg:'#FCE7F3',tc:'#9D174D',lo:50,hi:999},
+        {id:'g5x',op:'x',name:'Multiplication',sym:'&times;', bg:'#D1FAE5',tc:'#065F46',lo:6,hi:12},
+        {id:'g5/',op:'/',name:'Division',       sym:'&divide;',bg:'#FEF3C7',tc:'#92400E',lo:2,hi:12}]}
 ];
- 
-// ── Generate the set list for an op ──
-// Returns array of {key, label, problems[]}
-function getSets(op) {
-  var sets = [];
-  var opChar = op.op;
-  var lo = op.lo; var hi = op.hi;
- 
-  if (opChar === 'x') {
-    // x2 through x12 (or up to hi)
-    var maxFact = Math.min(12, hi);
-    var minFact = Math.max(2, lo);
-    for (var f = minFact; f <= maxFact; f++) {
-      var probs = [];
-      for (var n = 0; n <= 12; n++) {
-        probs.push({text: n + ' \u00d7 ' + f + ' =', ans: n * f});
-      }
-      sets.push({key: op.id + '_x' + f, label: '\u00d7' + f, problems: shuffle(probs)});
+
+// ════════════════════════════════════
+// STATE
+// ════════════════════════════════════
+var selGrade=null,selOp=null,selMode=null,selSet=null;
+var currentQ=null,answered=false;
+var inputVal=''; // track numpad input manually
+
+// blitz
+var bScore=0,bRight=0,bWrong=0,bStreak=0,bBest=0,bTime=60,bHandle=null,bPRtarget=15;
+
+// master
+var mQueue=[],mDone=0,mMisses=0,mStreak=0,mBest=0;
+var mPenalty=0,mElapsed=0,mHandle=null,mStart=0,mRunning=false,mTotal=0,mIsRetry=false;
+
+// ════════════════════════════════════
+// STORAGE
+// ════════════════════════════════════
+function store(){try{return JSON.parse(localStorage.getItem('mb5')||'{}');}catch(e){return{};}}
+function saveStore(s){localStorage.setItem('mb5',JSON.stringify(s));}
+function getPR(k){return store()['pr_'+k]||0;}
+function getStars(k){return store()['st_'+k]||0;}
+function recordPR(k,val,stars){
+  var s=store(),old=s['pr_'+k]||0,isNew=val>old;
+  if(isNew)s['pr_'+k]=val;
+  if(stars>(s['st_'+k]||0))s['st_'+k]=stars;
+  saveStore(s);return isNew;
+}
+
+// ════════════════════════════════════
+// UTILS
+// ════════════════════════════════════
+function ri(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function shuffle(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=ri(0,i),t=b[i];b[i]=b[j];b[j]=t;}return b;}
+function showScreen(id){
+  var all=document.querySelectorAll('.screen');
+  for(var i=0;i<all.length;i++)all[i].classList.remove('active');
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function fmtTime(s){
+  var m=Math.floor(s/60),sec=s%60,d=Math.floor((s-Math.floor(s))*10);
+  return m+':'+(Math.floor(sec)<10?'0':'')+Math.floor(sec)+'.'+d;
+}
+function el(id){return document.getElementById(id);}
+function setText(id,v){var e=el(id);if(e)e.textContent=v;}
+function starsHTML(n){
+  var h='';
+  for(var i=1;i<=3;i++)h+='<span class="op-star'+(n>=i?' e':'')+'">&#11088;</span>';
+  return h;
+}
+
+// ════════════════════════════════════
+// FULLSCREEN
+// ════════════════════════════════════
+el('fs-btn').addEventListener('click',function(){
+  var d=document,de=document.documentElement;
+  if(!d.fullscreenElement&&!d.webkitFullscreenElement){
+    if(de.requestFullscreen)de.requestFullscreen();
+    else if(de.webkitRequestFullscreen)de.webkitRequestFullscreen();
+    el('fs-btn').textContent='\u2715';
+  } else {
+    if(d.exitFullscreen)d.exitFullscreen();
+    else if(d.webkitExitFullscreen)d.webkitExitFullscreen();
+    el('fs-btn').innerHTML='&#x26F6;';
+  }
+});
+document.addEventListener('fullscreenchange',function(){
+  if(!document.fullscreenElement)el('fs-btn').innerHTML='&#x26F6;';
+});
+document.addEventListener('webkitfullscreenchange',function(){
+  if(!document.webkitFullscreenElement)el('fs-btn').innerHTML='&#x26F6;';
+});
+
+// ════════════════════════════════════
+// NUMPAD INPUT
+// ════════════════════════════════════
+function updateDisplay(){
+  var d=el('q-disp');
+  if(!d)return;
+  d.textContent=inputVal===''?'':inputVal;
+  d.className='q-answer-display'+(inputVal!==''?' has-val':'');
+}
+function numpadPress(n){
+  if(answered)return;
+  if(n==='del'){inputVal=inputVal.slice(0,-1);}
+  else if(n==='neg'){inputVal=inputVal.charAt(0)==='-'?inputVal.slice(1):'-'+inputVal;}
+  else if(inputVal.length<6){inputVal+=n;}
+  updateDisplay();
+}
+el('numpad').addEventListener('click',function(e){
+  var btn=e.target.closest('.np');
+  if(!btn)return;
+  numpadPress(btn.getAttribute('data-n'));
+});
+// Physical keyboard support
+document.addEventListener('keydown',function(e){
+  if(!el('game-screen').classList.contains('active'))return;
+  if(e.key>='0'&&e.key<='9')numpadPress(e.key);
+  else if(e.key==='-')numpadPress('neg');
+  else if(e.key==='Backspace')numpadPress('del');
+  else if(e.key==='Enter')submitAnswer();
+});
+
+// ════════════════════════════════════
+// SETS
+// ════════════════════════════════════
+function getSets(op){
+  var sets=[],o=op.op,lo=op.lo,hi=op.hi;
+  if(o==='x'){
+    for(var f=Math.max(2,lo);f<=Math.min(12,hi);f++){
+      var p=[];for(var n=0;n<=12;n++)p.push({text:n+' \u00d7 '+f+' =',ans:n*f});
+      sets.push({key:op.id+'_x'+f,label:'\u00d7'+f,problems:shuffle(p)});
     }
-  } else if (opChar === '/') {
-    var maxDiv = Math.min(12, hi);
-    var minDiv = Math.max(2, lo);
-    for (var d = minDiv; d <= maxDiv; d++) {
-      var probs2 = [];
-      for (var n2 = 0; n2 <= 12; n2++) {
-        probs2.push({text: (n2 * d) + ' \u00f7 ' + d + ' =', ans: n2});
-      }
-      sets.push({key: op.id + '_/'+d, label: '\u00f7' + d, problems: shuffle(probs2)});
+  } else if(o==='/'){
+    for(var d=Math.max(2,lo);d<=Math.min(12,hi);d++){
+      var p2=[];for(var n2=0;n2<=12;n2++)p2.push({text:(n2*d)+' \u00f7 '+d+' =',ans:n2});
+      sets.push({key:op.id+'_/'+d,label:'\u00f7'+d,problems:shuffle(p2)});
     }
-  } else if (opChar === '+') {
-    // add sets: +1 through +hi (capped 12), each n+(set) for n=0..12
-    var maxAdd = Math.min(12, hi);
-    var minAdd = Math.max(1, lo);
-    for (var a = minAdd; a <= maxAdd; a++) {
-      var probs3 = [];
-      for (var n3 = 0; n3 <= 12; n3++) {
-        probs3.push({text: n3 + ' + ' + a + ' =', ans: n3 + a});
-      }
-      sets.push({key: op.id + '_+'+a, label: '+' + a, problems: shuffle(probs3)});
+  } else if(o==='+'){
+    for(var a=Math.max(1,lo);a<=Math.min(12,hi);a++){
+      var p3=[];for(var n3=0;n3<=12;n3++)p3.push({text:n3+' + '+a+' =',ans:n3+a});
+      sets.push({key:op.id+'_+'+a,label:'+'+a,problems:shuffle(p3)});
     }
-  } else if (opChar === '-') {
-    // subtract sets: e.g. -9 means n-9 where result >= 0
-    // set key = the subtrahend. range: lo..hi (or 1..12)
-    var maxSub = Math.min(12, hi);
-    var minSub = Math.max(1, lo);
-    for (var s = minSub; s <= maxSub; s++) {
-      var probs4 = [];
-      // n - s >= 0  =>  n >= s
-      for (var n4 = s; n4 <= s + 12; n4++) {
-        probs4.push({text: n4 + ' \u2212 ' + s + ' =', ans: n4 - s});
-      }
-      sets.push({key: op.id + '_-'+s, label: '\u2212' + s, problems: shuffle(probs4)});
+  } else if(o==='-'){
+    for(var s=Math.max(1,lo);s<=Math.min(12,hi);s++){
+      var p4=[];
+      for(var n4=s;n4<=s+12;n4++)p4.push({text:n4+' \u2212 '+s+' =',ans:n4-s});
+      sets.push({key:op.id+'_-'+s,label:'\u2212'+s,problems:shuffle(p4)});
     }
   }
   return sets;
 }
- 
-// ══════════════════════════════════════════
-// STATE
-// ══════════════════════════════════════════
- 
-var selGrade = null;
-var selOp    = null;
-var selMode  = null; // 'blitz' | 'master'
-var selSet   = null; // set object (master only)
- 
-// blitz state
-var blitzScore  = 0;
-var blitzRight  = 0;
-var blitzWrong  = 0;
-var blitzStreak = 0;
-var blitzBest   = 0;
-var blitzTime   = 60;
-var blitzHandle = null;
-var blitzPRtarget = 15;
- 
-// master state
-var masterQueue    = [];  // remaining problems
-var masterDone     = 0;   // problems answered correctly
-var masterMisses   = 0;   // total misses
-var masterStreak   = 0;
-var masterBest     = 0;
-var masterPenalty  = 0;   // accumulated seconds
-var masterElapsed  = 0.0; // raw elapsed ms / 1000
-var masterHandle   = null;
-var masterStart    = 0;
-var masterRunning  = false;
-var masterTotalQ   = 0;
-var masterIsRetry  = false;
- 
-// shared
-var currentQ  = null;
-var answered  = false;
- 
-// ══════════════════════════════════════════
-// STORAGE
-// ══════════════════════════════════════════
- 
-function store() {
-  try { return JSON.parse(localStorage.getItem('mb4') || '{}'); } catch(e) { return {}; }
-}
-function saveStore(s) { localStorage.setItem('mb4', JSON.stringify(s)); }
- 
-function getPR(key)    { return store()['pr_'+key]    || 0; }
-function getStars(key) { return store()['st_'+key]    || 0; }
- 
-function recordPR(key, val, stars) {
-  var s = store();
-  var old = s['pr_'+key] || 0;
-  var isNew = val > old;
-  if (isNew) s['pr_'+key] = val;
-  if (stars > (s['st_'+key]||0)) s['st_'+key] = stars;
-  saveStore(s);
-  return isNew;
-}
- 
-// ══════════════════════════════════════════
-// UTILS
-// ══════════════════════════════════════════
- 
-function randInt(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
- 
-function shuffle(arr) {
-  var a = arr.slice();
-  for (var i = a.length-1; i > 0; i--) {
-    var j = randInt(0, i);
-    var t = a[i]; a[i] = a[j]; a[j] = t;
-  }
-  return a;
-}
- 
-function showScreen(id) {
-  var all = document.querySelectorAll('.screen');
-  for (var i=0;i<all.length;i++) all[i].classList.remove('active');
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0,0);
-}
- 
-function fmtTime(secs) {
-  var m = Math.floor(secs / 60);
-  var s = secs % 60;
-  var ds = Math.floor((secs - Math.floor(secs)) * 10);
-  return m + ':' + (Math.floor(s)<10?'0':'') + Math.floor(s) + '.' + ds;
-}
- 
-// ══════════════════════════════════════════
-// SCREEN 1: GRADES
-// ══════════════════════════════════════════
- 
-function renderGrades() {
-  var grid = document.getElementById('grade-grid');
-  grid.innerHTML = '';
-  for (var i=0;i<GRADES.length;i++) {
-    var g = GRADES[i];
-    var card = document.createElement('div');
-    card.className = 'grade-card';
-    card.innerHTML = '<div class="grade-emoji">'+g.emoji+'</div><div><div class="grade-name">'+g.name+'</div><div class="grade-desc">'+g.desc+'</div></div>';
-    (function(gr){ card.addEventListener('click', function(){ selGrade=gr; renderOps(); showScreen('op-screen'); }); })(g);
-    grid.appendChild(card);
+
+// ════════════════════════════════════
+// GRADE SCREEN
+// ════════════════════════════════════
+function renderGrades(){
+  var g=el('grade-grid');g.innerHTML='';
+  for(var i=0;i<GRADES.length;i++){
+    var gr=GRADES[i];
+    var c=document.createElement('div');c.className='grade-card';
+    c.innerHTML='<div class="grade-emoji">'+gr.emoji+'</div><div><div class="grade-name">'+gr.name+'</div><div class="grade-desc">'+gr.desc+'</div></div>';
+    (function(x){c.addEventListener('click',function(){selGrade=x;renderOps();showScreen('op-screen');});})(gr);
+    g.appendChild(c);
   }
 }
- 
-// ══════════════════════════════════════════
-// SCREEN 2: OPERATIONS
-// ══════════════════════════════════════════
- 
-function renderOps() {
-  document.getElementById('op-nav-title').textContent = selGrade.name;
-  document.getElementById('op-nav-sub').textContent = 'Choose an operation';
-  var grid = document.getElementById('op-grid');
-  grid.innerHTML = '';
-  var ops = selGrade.ops;
-  for (var i=0;i<ops.length;i++) {
-    var op = ops[i];
-    // Best PR across blitz and master sets for this op
-    var blitzPR = getPR('blitz_'+op.id);
-    var blitzStars = getStars('blitz_'+op.id);
-    var prText = blitzPR > 0 ? 'Blitz PR: <span class="prv">'+blitzPR+'</span>' : 'No record yet';
-    var s1=blitzStars>=1?' e':''; var s2=blitzStars>=2?' e':''; var s3=blitzStars>=3?' e':'';
-    var card = document.createElement('div');
-    card.className = 'op-card';
-    card.style.borderColor = op.bg;
-    card.innerHTML =
-      '<div class="op-symbol" style="color:'+op.tc+'">'+op.sym+'</div>'+
-      '<div class="op-name">'+op.name+'</div>'+
-      '<div class="op-pr">'+prText+'</div>'+
-      '<div class="op-stars"><span class="op-star'+s1+'">&#11088;</span><span class="op-star'+s2+'">&#11088;</span><span class="op-star'+s3+'">&#11088;</span></div>';
-    (function(o){ card.addEventListener('click', function(){ selOp=o; renderModes(); showScreen('mode-screen'); }); })(op);
-    grid.appendChild(card);
+
+// ════════════════════════════════════
+// OP SCREEN
+// ════════════════════════════════════
+function renderOps(){
+  el('op-nav-title').textContent=selGrade.name;
+  var g=el('op-grid');g.innerHTML='';
+  for(var i=0;i<selGrade.ops.length;i++){
+    var op=selGrade.ops[i];
+    var pr=getPR('blitz_'+op.id),st=getStars('blitz_'+op.id);
+    var prTxt=pr>0?'Blitz PR: <span class="prv">'+pr+'</span>':'No record yet';
+    var c=document.createElement('div');c.className='op-card';c.style.borderColor=op.bg;
+    c.innerHTML='<div class="op-symbol" style="color:'+op.tc+'">'+op.sym+'</div><div class="op-name">'+op.name+'</div><div class="op-pr">'+prTxt+'</div><div class="op-stars">'+starsHTML(st)+'</div>';
+    (function(x){c.addEventListener('click',function(){selOp=x;renderModes();showScreen('mode-screen');});})(op);
+    g.appendChild(c);
   }
 }
- 
-// ══════════════════════════════════════════
-// SCREEN 3: MODE
-// ══════════════════════════════════════════
- 
-function renderModes() {
-  document.getElementById('mode-nav-title').textContent = selOp.name + ' \u2014 ' + selGrade.name;
-  document.getElementById('mode-nav-sub').textContent = 'How do you want to drill?';
-  var grid = document.getElementById('mode-grid');
-  grid.innerHTML = '';
- 
-  var blitzPR = getPR('blitz_'+selOp.id);
-  var blitzCard = document.createElement('div');
-  blitzCard.className = 'mode-card blitz';
-  blitzCard.innerHTML =
-    '<div class="mode-icon">&#9889;</div>'+
-    '<div>'+
-      '<div class="mode-tag tag-b">BLITZ</div>'+
-      '<div class="mode-name blue">60-Second Blitz</div>'+
-      '<div class="mode-desc">Answer as many as you can in 60 seconds.<br>+1 correct &nbsp;&bull;&nbsp; &minus;1 wrong.<br>'+(blitzPR>0?'Your record: <strong>'+blitzPR+'</strong>':'No record yet — set one!')+'</div>'+
-    '</div>';
-  blitzCard.addEventListener('click', function(){ selMode='blitz'; startBlitz(); });
-  grid.appendChild(blitzCard);
- 
-  var masterCard = document.createElement('div');
-  masterCard.className = 'mode-card master';
-  masterCard.innerHTML =
-    '<div class="mode-icon">&#127941;</div>'+
-    '<div>'+
-      '<div class="mode-tag tag-m">MASTER IT</div>'+
-      '<div class="mode-name purple">Master It</div>'+
-      '<div class="mode-desc">Pick a set (like the &times;7s). Answer every problem exactly once in a random order — as fast as you can.<br>+5 sec penalty per miss. Same card repeats until you get it right.</div>'+
-    '</div>';
-  masterCard.addEventListener('click', function(){ selMode='master'; renderSets(); showScreen('set-screen'); });
-  grid.appendChild(masterCard);
-}
- 
-// ══════════════════════════════════════════
-// SCREEN 4: SET (Master It only)
-// ══════════════════════════════════════════
- 
-function renderSets() {
-  document.getElementById('set-nav-title').textContent = 'Choose a set';
-  document.getElementById('set-nav-sub').textContent = selOp.name + ' \u2014 ' + selGrade.name;
-  var sets = getSets(selOp);
-  var grid = document.getElementById('set-grid');
-  grid.innerHTML = '';
-  for (var i=0;i<sets.length;i++) {
-    var st = sets[i];
-    var pr = getPR('master_'+st.key);
-    var stars = getStars('master_'+st.key);
-    var s1=stars>=1?' e':''; var s2=stars>=2?' e':''; var s3=stars>=3?' e':'';
-    var prTxt = pr > 0 ? 'Best: <strong>'+fmtTime(pr)+'</strong>' : 'No record';
-    var card = document.createElement('div');
-    card.className = 'set-card';
-    card.style.borderColor = selOp.bg;
-    card.innerHTML =
-      '<div class="set-sym" style="color:'+selOp.tc+'">'+st.label+'</div>'+
-      '<div class="set-pr">'+prTxt+'</div>'+
-      '<div class="set-stars"><span class="set-star'+s1+'">&#11088;</span><span class="set-star'+s2+'">&#11088;</span><span class="set-star'+s3+'">&#11088;</span></div>';
-    (function(s){ card.addEventListener('click', function(){ selSet=s; startMaster(); }); })(st);
-    grid.appendChild(card);
-  }
-}
- 
-// ══════════════════════════════════════════
-// BLITZ MODE
-// ══════════════════════════════════════════
- 
-function makeBlitzQ() {
-  var op=selOp.op, lo=selOp.lo, hi=selOp.hi, a, b, ans;
-  if (op==='+') { a=randInt(lo,hi); b=randInt(lo,hi); ans=a+b; return {text:a+' + '+b+' =',ans:ans}; }
-  if (op==='-') { a=randInt(lo,hi); b=randInt(lo,a);  ans=a-b; return {text:a+' \u2212 '+b+' =',ans:ans}; }
-  if (op==='x') { a=randInt(lo,hi); b=randInt(1,12);  ans=a*b; return {text:a+' \u00d7 '+b+' =',ans:ans}; }
-  b=randInt(lo,hi); ans=randInt(1,12); a=b*ans; return {text:a+' \u00f7 '+b+' =',ans:ans};
-}
- 
-function startBlitz() {
-  blitzScore=0; blitzRight=0; blitzWrong=0; blitzStreak=0; blitzBest=0;
-  blitzTime=60; answered=false;
-  clearInterval(blitzHandle);
-  blitzPRtarget = Math.max(getPR('blitz_'+selOp.id), 15);
- 
-  // Show/hide UI elements
-  show('blitz-timer-wrap'); hide('master-sw-wrap');
-  show('blitz-bar-wrap');   hide('master-bar-wrap');
-  document.getElementById('go-btn').className = '';
-  document.getElementById('game-nav-title').textContent = selOp.name+' \u2014 '+selGrade.name;
-  document.getElementById('game-nav-sub').textContent = 'Blitz \u2014 60 seconds';
- 
-  // Stats bar: score | correct | wrong | streak
-  var sb = document.getElementById('game-stats-row');
-  sb.innerHTML =
-    '<div class="gs hl"><div class="gs-val" id="gs-score">0</div><div class="gs-lbl">score</div></div>'+
-    '<div class="gs"><div class="gs-val" id="gs-right" style="color:var(--green-dark)">0</div><div class="gs-lbl">correct</div></div>'+
-    '<div class="gs"><div class="gs-val" id="gs-wrong2" style="color:var(--red)">0</div><div class="gs-lbl">wrong</div></div>'+
-    '<div class="gs"><div class="gs-val" id="gs-streak">0</div><div class="gs-lbl">streak</div></div>';
- 
-  document.getElementById('blitz-arc').style.strokeDashoffset='0';
-  document.getElementById('blitz-arc').style.stroke='#3B82F6';
-  document.getElementById('blitz-num').textContent='60';
-  document.getElementById('bsc').textContent='0';
+
+// ════════════════════════════════════
+// MODE SCREEN
+// ════════════════════════════════════
+function renderModes(){
+  el('mode-nav-title').textContent=selOp.name+' \u2014 '+selGrade.name;
+  var g=el('mode-grid');g.innerHTML='';
   var pr=getPR('blitz_'+selOp.id);
-  document.getElementById('bpr').innerHTML = pr>0?'PR: <strong>'+pr+'</strong>':'PR: <strong>\u2014</strong>';
-  document.getElementById('blitz-bar').style.width='0%';
-  document.getElementById('blitz-bar').style.background='var(--green)';
- 
+  // Blitz card
+  var bc=document.createElement('div');bc.className='mode-card blitz';
+  bc.innerHTML='<div class="mode-icon">&#9889;</div><div><div class="mode-tag tag-b">BLITZ</div><div class="mode-name blue">60-Second Blitz</div><div class="mode-desc">Answer as many as you can in 60 seconds.<br>+1 correct &bull; \u22121 wrong.<br>'+(pr>0?'Your record: <strong>'+pr+'</strong>':'No record yet \u2014 set one!')+'</div></div>';
+  bc.addEventListener('click',function(){selMode='blitz';startBlitz();});
+  g.appendChild(bc);
+  // Master card
+  var mc=document.createElement('div');mc.className='mode-card master';
+  mc.innerHTML='<div class="mode-icon">&#127941;</div><div><div class="mode-tag tag-m">MASTER IT</div><div class="mode-name purple">Master It</div><div class="mode-desc">Pick a set (like \u00d77s). Answer every problem once in random order, as fast as you can.<br>+5 sec penalty per miss. Same card repeats until correct.</div></div>';
+  mc.addEventListener('click',function(){selMode='master';renderSets();showScreen('set-screen');});
+  g.appendChild(mc);
+}
+
+// ════════════════════════════════════
+// SET SCREEN
+// ════════════════════════════════════
+function renderSets(){
+  el('set-nav-title').textContent=selOp.name+' \u2014 '+selGrade.name;
+  var sets=getSets(selOp),g=el('set-grid');g.innerHTML='';
+  for(var i=0;i<sets.length;i++){
+    var st=sets[i];
+    var pr=getPR('master_'+st.key),stars=getStars('master_'+st.key);
+    var prTxt=pr>0?'Best: <strong>'+fmtTime(pr/10)+'</strong>':'No record';
+    var c=document.createElement('div');c.className='set-card';c.style.borderColor=selOp.bg;
+    c.innerHTML='<div class="set-sym" style="color:'+selOp.tc+'">'+st.label+'</div><div class="set-pr">'+prTxt+'</div><div class="set-stars">'+starsHTML(stars).replace(/op-star/g,'set-star')+'</div>';
+    (function(x){c.addEventListener('click',function(){selSet=x;startMaster();});})(st);
+    g.appendChild(c);
+  }
+}
+
+// ════════════════════════════════════
+// GAME SETUP HELPERS
+// ════════════════════════════════════
+function setupGameHeader(title,sub){
+  el('ghdr-title').textContent=title;
+  el('ghdr-sub').textContent=sub;
+}
+function clearCard(){
+  inputVal='';
+  el('q-card').className='q-card';
+  el('q-reveal').textContent='';
+  el('q-reveal').className='q-reveal';
+  updateDisplay();
+}
+
+// ════════════════════════════════════
+// BLITZ MODE
+// ════════════════════════════════════
+function makeBlitzQ(){
+  var o=selOp.op,lo=selOp.lo,hi=selOp.hi,a,b,ans;
+  if(o==='+'){a=ri(lo,hi);b=ri(lo,hi);ans=a+b;return{text:a+' + '+b+' =',ans:ans};}
+  if(o==='-'){a=ri(lo,hi);b=ri(lo,a);ans=a-b;return{text:a+' \u2212 '+b+' =',ans:ans};}
+  if(o==='x'){a=ri(lo,hi);b=ri(1,12);ans=a*b;return{text:a+' \u00d7 '+b+' =',ans:ans};}
+  b=ri(lo,hi);ans=ri(1,12);a=b*ans;return{text:a+' \u00f7 '+b+' =',ans:ans};
+}
+
+function startBlitz(){
+  bScore=0;bRight=0;bWrong=0;bStreak=0;bBest=0;bTime=60;answered=false;
+  clearInterval(bHandle);bHandle=null;
+  bPRtarget=Math.max(getPR('blitz_'+selOp.id),15);
+  setupGameHeader(selOp.name+' \u2014 '+selGrade.name,'Blitz \u2014 60 seconds \u2022 +1 correct \u2022 \u22121 wrong');
+  el('go-btn').className='go-btn';
+  // Header stats
+  el('ghdr-stats').innerHTML='<div class="ghstat"><div class="ghstat-val" id="gs-sc">0</div><div class="ghstat-lbl">score</div></div><div class="ghstat"><div class="ghstat-val" id="gs-st" style="color:var(--green-dark)">0</div><div class="ghstat-lbl">streak</div></div>';
+  // Timer row
+  el('timer-row').innerHTML=
+    '<div class="blitz-ring-wrap"><svg width="56" height="56" viewBox="0 0 56 56"><circle cx="28" cy="28" r="22" fill="none" stroke="#E2E8F0" stroke-width="6"/><circle id="blitz-arc" cx="28" cy="28" r="22" fill="none" stroke="#3B82F6" stroke-width="6" stroke-linecap="round" stroke-dasharray="138" stroke-dashoffset="0"/></svg><div id="blitz-num">60</div></div>'+
+    '<div class="score-bar-wrap"><div class="score-bar-lbl"><span>score: <span class="sc" id="bsc">0</span></span><span class="pr" id="bpr">PR: <strong>'+(getPR('blitz_'+selOp.id)||'\u2014')+'</strong></span></div><div class="bar-bg"><div id="blitz-bar" style="width:0%"></div></div></div>';
   showScreen('game-screen');
   loadBlitzQ();
-  document.getElementById('ans-input').focus();
 }
- 
-function loadBlitzQ() {
-  currentQ = makeBlitzQ();
-  answered = false;
-  document.getElementById('q-label').textContent = '';
-  document.getElementById('q-text').textContent = currentQ.text;
-  document.getElementById('q-reveal').textContent='';
-  document.getElementById('q-reveal').className='q-reveal';
-  document.getElementById('flashcard').className='flashcard';
-  document.getElementById('ans-input').value='';
-  if (!blitzHandle) startBlitzTimer();
-  document.getElementById('ans-input').focus();
+
+function loadBlitzQ(){
+  currentQ=makeBlitzQ();answered=false;
+  clearCard();
+  el('q-meta').textContent='';
+  el('q-eq').textContent=currentQ.text;
+  if(!bHandle)startBlitzTimer();
 }
- 
-function startBlitzTimer() {
-  var circ=214;
-  blitzHandle = setInterval(function(){
-    blitzTime -= 0.08;
-    if (blitzTime <= 0) { blitzTime=0; clearInterval(blitzHandle); blitzHandle=null; endBlitz(); return; }
-    var pct = blitzTime/60;
-    document.getElementById('blitz-arc').style.strokeDashoffset = circ*(1-pct);
-    document.getElementById('blitz-num').textContent = Math.ceil(blitzTime);
-    document.getElementById('blitz-arc').style.stroke = pct<0.25?'#EF4444':pct<0.5?'#F59E0B':'#3B82F6';
-  }, 80);
+
+function startBlitzTimer(){
+  var circ=138;
+  bHandle=setInterval(function(){
+    bTime-=0.08;
+    if(bTime<=0){bTime=0;clearInterval(bHandle);bHandle=null;endBlitz();return;}
+    var pct=bTime/60;
+    el('blitz-arc').style.strokeDashoffset=circ*(1-pct);
+    el('blitz-num').textContent=Math.ceil(bTime);
+    el('blitz-arc').style.stroke=pct<0.25?'#EF4444':pct<0.5?'#F59E0B':'#3B82F6';
+  },80);
 }
- 
-function submitBlitz() {
-  if (answered) return;
-  var val = parseInt(document.getElementById('ans-input').value, 10);
-  if (isNaN(val)) { document.getElementById('ans-input').focus(); return; }
-  answered = true;
- 
-  var ok = val === currentQ.ans;
-  var fc = document.getElementById('flashcard');
-  var rv = document.getElementById('q-reveal');
- 
-  if (ok) {
-    blitzRight++; blitzScore++; blitzStreak++;
-    if (blitzStreak>blitzBest) blitzBest=blitzStreak;
-    fc.className='flashcard cf pop';
-    rv.textContent='Correct! +1'; rv.className='q-reveal c';
-  } else {
-    blitzWrong++; blitzScore--; blitzStreak=0;
-    fc.className='flashcard wf shake';
-    rv.innerHTML=currentQ.ans+' &nbsp; \u22121'; rv.className='q-reveal w';
-  }
- 
-  // update stats
-  var scoreEl = document.getElementById('gs-score');
-  if (scoreEl) { scoreEl.textContent=blitzScore; scoreEl.className='gs-val'+(blitzScore<0?' neg':''); }
-  setTextSafe('gs-right', blitzRight);
-  setTextSafe('gs-wrong2', blitzWrong);
-  setTextSafe('gs-streak', blitzStreak);
-  document.getElementById('bsc').textContent=blitzScore;
-  var pct=Math.max(0,Math.min(100,Math.round(blitzScore/blitzPRtarget*100)));
-  document.getElementById('blitz-bar').style.width=pct+'%';
-  document.getElementById('blitz-bar').style.background=blitzScore<0?'var(--red)':blitzScore>=blitzPRtarget?'var(--amber)':'var(--green)';
- 
-  setTimeout(loadBlitzQ, ok ? 350 : 900);
+
+function submitBlitz(){
+  if(answered)return;
+  var val=parseInt(inputVal,10);
+  if(isNaN(val))return;
+  answered=true;
+  var ok=val===currentQ.ans;
+  if(ok){bRight++;bScore++;bStreak++;if(bStreak>bBest)bBest=bStreak;
+    el('q-card').className='q-card cf pop';el('q-reveal').textContent='Correct! +1';el('q-reveal').className='q-reveal c';}
+  else{bWrong++;bScore--;bStreak=0;
+    el('q-card').className='q-card wf shake';el('q-reveal').innerHTML=currentQ.ans+' &nbsp; \u22121';el('q-reveal').className='q-reveal w';}
+  setText('gs-sc',bScore);setText('gs-st',bStreak);setText('bsc',bScore);
+  var pct=Math.max(0,Math.min(100,Math.round(bScore/bPRtarget*100)));
+  el('blitz-bar').style.width=pct+'%';
+  el('blitz-bar').style.background=bScore<0?'var(--red)':bScore>=bPRtarget?'var(--amber)':'var(--green)';
+  setTimeout(loadBlitzQ,ok?320:850);
 }
- 
-function endBlitz() {
-  clearInterval(blitzHandle); blitzHandle=null;
-  var total=blitzRight+blitzWrong;
-  var acc=total>0?Math.round(blitzRight/total*100):0;
-  var stars=calcBlitzStars(blitzScore);
-  var isNew=recordPR('blitz_'+selOp.id, blitzScore, stars);
+
+function endBlitz(){
+  clearInterval(bHandle);bHandle=null;
+  var tot=bRight+bWrong,acc=tot>0?Math.round(bRight/tot*100):0;
+  var stars=calcBlitzStars(bScore);
+  var isNew=recordPR('blitz_'+selOp.id,bScore,stars);
   renderOps();
- 
-  document.getElementById('res-tag').className='res-tag tag-rb';
-  document.getElementById('res-tag').textContent='BLITZ';
-  document.getElementById('res-context').textContent=selOp.name+' \u2014 '+selGrade.name;
- 
-  var big=document.getElementById('res-big');
-  big.textContent=(blitzScore>0?'+':'')+blitzScore;
-  big.className='res-big '+(blitzScore>0?'pos':blitzScore<0?'neg':'zer');
-  document.getElementById('res-sub').innerHTML='<span style="color:var(--green-dark);font-weight:800;">+'+blitzRight+' correct</span> &nbsp; <span style="color:var(--red);font-weight:800;">\u2212'+blitzWrong+' wrong</span>';
- 
-  document.getElementById('rec-wrap').innerHTML=isNew&&blitzScore>0?'<div class="rec-badge">&#127942; New personal record!</div>':'';
- 
-  document.getElementById('rs1').textContent=acc+'%'; document.getElementById('rs1l').textContent='accuracy';
-  document.getElementById('rs2').textContent=blitzBest; document.getElementById('rs2l').textContent='best streak';
-  var currentPR=getPR('blitz_'+selOp.id);
-  document.getElementById('rs3').textContent=currentPR>0?currentPR:'\u2014'; document.getElementById('rs3l').textContent='your record';
- 
-  setMsg(stars, 'blitz');
-  animStars(stars);
-  document.getElementById('again-btn').className='btn-p';
-  document.getElementById('change-set-btn').style.display='none';
+  el('res-tag').className='res-tag tag-rb';el('res-tag').textContent='BLITZ';
+  el('res-context').textContent=selOp.name+' \u2014 '+selGrade.name;
+  var big=el('res-big');big.textContent=(bScore>0?'+':'')+bScore;
+  big.className='res-big '+(bScore>0?'pos':bScore<0?'neg':'zer');
+  el('res-sub').innerHTML='<span style="color:var(--green-dark);font-weight:800;">+'+bRight+' correct</span> &nbsp; <span style="color:var(--red);font-weight:800;">\u2212'+bWrong+' wrong</span>';
+  el('rec-wrap').innerHTML=isNew&&bScore>0?'<div class="rec-badge">&#127942; New personal record!</div>':'';
+  setText('rs1',acc+'%');setText('rs1l','accuracy');
+  setText('rs2',bBest);setText('rs2l','best streak');
+  var curPR=getPR('blitz_'+selOp.id);
+  setText('rs3',curPR>0?curPR:'\u2014');setText('rs3l','your record');
+  setMsg(stars,'blitz');animStars(stars);
+  el('again-btn').className='btn-p';el('change-set-btn').style.display='none';
   showScreen('results-screen');
 }
- 
-function calcBlitzStars(score) {
-  var bm={'g1+':[ 8,14,20],'g1-':[ 6,12,18],
-          'g2+':[ 8,14,20],'g2-':[ 6,12,18],'g2x':[ 6,10,16],
-          'g3+':[ 8,14,20],'g3-':[ 6,12,18],'g3x':[ 8,12,18],'g3/':[ 6,10,16],
-          'g4+':[ 6,12,18],'g4-':[ 6,12,18],'g4x':[ 8,12,18],'g4/':[ 6,10,16],
-          'g5+':[ 4, 8,14],'g5-':[ 4, 8,14],'g5x':[ 6,10,16],'g5/':[ 4, 8,14]};
+
+function calcBlitzStars(score){
+  var bm={'g1+':[8,14,20],'g1-':[6,12,18],'g2+':[8,14,20],'g2-':[6,12,18],'g2x':[6,10,16],
+          'g3+':[8,14,20],'g3-':[6,12,18],'g3x':[8,12,18],'g3/':[6,10,16],
+          'g4+':[6,12,18],'g4-':[6,12,18],'g4x':[8,12,18],'g4/':[6,10,16],
+          'g5+':[4,8,14], 'g5-':[4,8,14], 'g5x':[6,10,16],'g5/':[4,8,14]};
   var b=bm[selOp.id]||[6,10,16];
   return score>=b[2]?3:score>=b[1]?2:score>=b[0]?1:0;
 }
- 
-// ══════════════════════════════════════════
+
+// ════════════════════════════════════
 // MASTER IT MODE
-// ══════════════════════════════════════════
- 
-function startMaster() {
-  masterQueue   = selSet.problems.slice();
-  masterTotalQ  = masterQueue.length;
-  masterDone    = 0; masterMisses=0; masterStreak=0; masterBest=0;
-  masterPenalty = 0; masterElapsed=0; masterRunning=false; masterIsRetry=false;
-  answered=false;
-  clearInterval(masterHandle);
- 
-  hide('blitz-timer-wrap'); show('master-sw-wrap');
-  hide('blitz-bar-wrap');   show('master-bar-wrap');
-  document.getElementById('go-btn').className='mp';
-  document.getElementById('game-nav-title').textContent=selOp.name+' \u2014 '+selSet.label;
-  document.getElementById('game-nav-sub').textContent='Master It \u2014 '+masterTotalQ+' problems';
- 
-  var sb=document.getElementById('game-stats-row');
-  sb.innerHTML=
-    '<div class="gs hl-p"><div class="gs-val" id="gs-mtime">0:00.0</div><div class="gs-lbl">time</div></div>'+
-    '<div class="gs"><div class="gs-val" id="gs-mpen" style="color:var(--red)">+0s</div><div class="gs-lbl">penalties</div></div>'+
-    '<div class="gs"><div class="gs-val" id="gs-mmiss" style="color:var(--amber)">0</div><div class="gs-lbl">misses</div></div>'+
-    '<div class="gs"><div class="gs-val" id="gs-mstreak">0</div><div class="gs-lbl">streak</div></div>';
- 
-  document.getElementById('sw-time').textContent='0:00.0';
-  document.getElementById('sw-penalty').textContent='';
-  document.getElementById('m-done').textContent='0';
-  document.getElementById('m-total').textContent=masterTotalQ;
-  document.getElementById('m-misses').textContent='0';
-  document.getElementById('master-bar').style.width='0%';
- 
+// ════════════════════════════════════
+function startMaster(){
+  mQueue=selSet.problems.slice();mTotal=mQueue.length;
+  mDone=0;mMisses=0;mStreak=0;mBest=0;mPenalty=0;mElapsed=0;
+  mRunning=false;mIsRetry=false;answered=false;
+  clearInterval(mHandle);mHandle=null;
+  setupGameHeader(selOp.name+' '+selSet.label+' \u2014 '+selGrade.name,'Master It \u2022 '+mTotal+' problems \u2022 fastest time wins');
+  el('go-btn').className='go-btn purple';
+  el('ghdr-stats').innerHTML='<div class="ghstat"><div class="ghstat-val" id="gs-mm" style="color:var(--amber)">0</div><div class="ghstat-lbl">misses</div></div>';
+  // Timer row: stopwatch + progress bar
+  el('timer-row').innerHTML=
+    '<div><div class="sw-display" id="sw-time">0:00.0</div><div class="sw-penalty-flash" id="sw-pen"></div></div>'+
+    '<div class="master-prog-wrap"><div class="master-prog-lbl"><span>done: <strong id="m-done">0</strong> / <strong>'+mTotal+'</strong></span><span id="m-miss-lbl">misses: <strong id="m-miss">0</strong></span></div><div class="mbar-bg"><div id="master-bar" style="width:0%"></div></div></div>';
   showScreen('game-screen');
   loadMasterQ();
-  document.getElementById('ans-input').focus();
 }
- 
-function loadMasterQ() {
-  currentQ = masterQueue[0];
-  answered = false;
-  document.getElementById('q-label').textContent = masterIsRetry ? 'Try again \u2014 you missed this one!' : (masterDone+1)+' of '+masterTotalQ;
-  document.getElementById('q-text').textContent = currentQ.text;
-  document.getElementById('q-reveal').textContent='';
-  document.getElementById('q-reveal').className='q-reveal';
-  document.getElementById('flashcard').className = masterIsRetry ? 'flashcard rf' : 'flashcard';
-  document.getElementById('ans-input').value='';
-  if (!masterRunning) { masterRunning=true; masterStart=Date.now(); startMasterTimer(); }
-  document.getElementById('ans-input').focus();
+
+function loadMasterQ(){
+  currentQ=mQueue[0];answered=false;
+  clearCard();
+  el('q-meta').textContent=mIsRetry?'Try again \u2014 you missed this one!':(mDone+1)+' of '+mTotal;
+  el('q-eq').textContent=currentQ.text;
+  el('q-card').className=mIsRetry?'q-card rf':'q-card';
+  if(!mRunning){mRunning=true;mStart=Date.now();startMasterTimer();}
 }
- 
-function startMasterTimer() {
-  masterHandle = setInterval(function(){
-    masterElapsed = (Date.now()-masterStart)/1000;
-    var total = masterElapsed + masterPenalty;
-    document.getElementById('sw-time').textContent = fmtTime(total);
-    setTextSafe('gs-mtime', fmtTime(total));
-  }, 100);
+
+function startMasterTimer(){
+  mHandle=setInterval(function(){
+    mElapsed=(Date.now()-mStart)/1000;
+    var tot=mElapsed+mPenalty;
+    var s=fmtTime(tot);
+    setText('sw-time',s);setText('gs-mtime',s);
+  },100);
 }
- 
-function submitMaster() {
-  if (answered) return;
-  var val=parseInt(document.getElementById('ans-input').value, 10);
-  if (isNaN(val)) { document.getElementById('ans-input').focus(); return; }
+
+function submitMaster(){
+  if(answered)return;
+  var val=parseInt(inputVal,10);
+  if(isNaN(val))return;
   answered=true;
- 
-  var ok = val===currentQ.ans;
-  var fc=document.getElementById('flashcard');
-  var rv=document.getElementById('q-reveal');
- 
-  if (ok) {
-    masterDone++;
-    masterStreak++;
-    if (masterStreak>masterBest) masterBest=masterStreak;
-    masterIsRetry=false;
-    masterQueue.shift(); // remove from front — done
-    fc.className='flashcard cf pop';
-    rv.textContent='Correct!'; rv.className='q-reveal c';
- 
-    // update progress
-    document.getElementById('m-done').textContent=masterDone;
-    document.getElementById('master-bar').style.width=Math.round(masterDone/masterTotalQ*100)+'%';
-    setTextSafe('gs-mstreak', masterStreak);
- 
-    if (masterQueue.length===0) {
-      setTimeout(endMaster, 600);
-    } else {
-      setTimeout(loadMasterQ, 400);
-    }
+  var ok=val===currentQ.ans;
+  if(ok){
+    mDone++;mStreak++;if(mStreak>mBest)mBest=mStreak;mIsRetry=false;
+    mQueue.shift();
+    el('q-card').className='q-card cf pop';el('q-reveal').textContent='Correct!';el('q-reveal').className='q-reveal c';
+    setText('m-done',mDone);
+    el('master-bar').style.width=Math.round(mDone/mTotal*100)+'%';
+    if(mQueue.length===0){setTimeout(endMaster,600);}
+    else{setTimeout(loadMasterQ,380);}
   } else {
-    masterMisses++;
-    masterPenalty+=5;
-    masterStreak=0;
-    masterIsRetry=true;
-    fc.className='flashcard wf shake';
-    rv.innerHTML='+5 sec penalty \u2014 try again!'; rv.className='q-reveal w';
- 
-    document.getElementById('m-misses').textContent=masterMisses;
-    setTextSafe('gs-mmiss', masterMisses);
-    setTextSafe('gs-mpen', '+'+masterPenalty+'s');
-    setTextSafe('gs-mstreak', 0);
- 
-    // flash penalty on stopwatch
-    document.getElementById('sw-penalty').textContent='+5 sec penalty!';
-    setTimeout(function(){ document.getElementById('sw-penalty').textContent=''; }, 1200);
- 
-    setTimeout(loadMasterQ, 1000);
+    mMisses++;mPenalty+=5;mStreak=0;mIsRetry=true;
+    el('q-card').className='q-card wf shake';
+    el('q-reveal').innerHTML='+5 sec \u2014 try again!';el('q-reveal').className='q-reveal w';
+    setText('m-miss',mMisses);setText('gs-mm',mMisses);
+    var pe=el('sw-pen');if(pe){pe.textContent='+5 sec penalty!';setTimeout(function(){pe.textContent='';},1200);}
+    setTimeout(loadMasterQ,1000);
   }
 }
- 
-function endMaster() {
-  clearInterval(masterHandle); masterHandle=null; masterRunning=false;
-  var finalTime = masterElapsed + masterPenalty;
-  var finalTenths = Math.round(finalTime * 10); // store as tenths for PR comparison (lower=better)
- 
-  // For master mode, lower time = better. PR = lowest time (stored as tenths, display inverted)
-  var oldPRtenths = getPR('master_'+selSet.key); // 0 = no record
-  var isNew = (oldPRtenths===0) || (finalTenths < oldPRtenths);
-  var stars = calcMasterStars(finalTime, masterMisses, masterTotalQ);
-  if (isNew) {
-    var s2=store(); s2['pr_'+'master_'+selSet.key]=finalTenths;
-    if (stars>(s2['st_'+'master_'+selSet.key]||0)) s2['st_'+'master_'+selSet.key]=stars;
-    saveStore(s2);
-  }
+
+function endMaster(){
+  clearInterval(mHandle);mHandle=null;mRunning=false;
+  var finalTime=mElapsed+mPenalty;
+  var tenths=Math.round(finalTime*10);
+  var old=getPR('master_'+selSet.key);
+  var isNew=old===0||tenths<old;
+  var stars=calcMasterStars(finalTime,mMisses,mTotal);
+  if(isNew){var s2=store();s2['pr_master_'+selSet.key]=tenths;if(stars>(s2['st_master_'+selSet.key]||0))s2['st_master_'+selSet.key]=stars;saveStore(s2);}
   renderSets();
- 
-  document.getElementById('res-tag').className='res-tag tag-rm';
-  document.getElementById('res-tag').textContent='MASTER IT';
-  document.getElementById('res-context').textContent=selOp.name+' '+selSet.label+' \u2014 '+selGrade.name;
- 
-  var big=document.getElementById('res-big');
-  big.textContent=fmtTime(finalTime);
-  big.className='res-big tim';
-  document.getElementById('res-sub').textContent=masterTotalQ+' problems \u2014 '+masterMisses+' miss'+(masterMisses===1?'':' es')+' (+'+masterPenalty+'s penalty)';
- 
-  var bestTenths=getPR('master_'+selSet.key);
-  var bestStr=bestTenths>0?fmtTime(bestTenths/10):'\u2014';
-  document.getElementById('rec-wrap').innerHTML=isNew&&masterMisses===0?'<div class="rec-badge">&#127942; New record!</div>':isNew?'<div class="rec-badge">&#127942; New record! (with misses)</div>':'';
- 
-  var acc=Math.round((masterTotalQ/(masterTotalQ+masterMisses))*100);
-  document.getElementById('rs1').textContent=acc+'%'; document.getElementById('rs1l').textContent='accuracy';
-  document.getElementById('rs2').textContent=masterBest; document.getElementById('rs2l').textContent='best streak';
-  document.getElementById('rs3').textContent=bestStr; document.getElementById('rs3l').textContent='best time';
- 
-  setMsg(stars,'master');
-  animStars(stars);
-  document.getElementById('again-btn').className='btn-p pur';
-  document.getElementById('change-set-btn').style.display='';
+  el('res-tag').className='res-tag tag-rm';el('res-tag').textContent='MASTER IT';
+  el('res-context').textContent=selOp.name+' '+selSet.label+' \u2014 '+selGrade.name;
+  var big=el('res-big');big.textContent=fmtTime(finalTime);big.className='res-big tim';
+  el('res-sub').textContent=mTotal+' problems \u2014 '+mMisses+' miss'+(mMisses===1?'':'es')+' (+'+(mPenalty)+'s)';
+  var bestT=getPR('master_'+selSet.key);
+  el('rec-wrap').innerHTML=isNew?'<div class="rec-badge">&#127942; New record!</div>':'';
+  var acc=Math.round((mTotal/(mTotal+mMisses))*100);
+  setText('rs1',acc+'%');setText('rs1l','accuracy');
+  setText('rs2',mBest);setText('rs2l','best streak');
+  setText('rs3',bestT>0?fmtTime(bestT/10):'\u2014');setText('rs3l','best time');
+  setMsg(stars,'master');animStars(stars);
+  el('again-btn').className='btn-p pur';el('change-set-btn').style.display='';
   showScreen('results-screen');
 }
- 
-function calcMasterStars(finalTime, misses, total) {
-  // 3 stars: no misses, fast time (<= 1.5s/problem)
-  // 2 stars: <=2 misses OR time <= 2.5s/problem
-  // 1 star:  completed
-  if (misses===0 && finalTime<=total*1.5) return 3;
-  if (misses<=2  || finalTime<=total*2.5) return 2;
+
+function calcMasterStars(t,misses,total){
+  if(misses===0&&t<=total*1.5)return 3;
+  if(misses<=2||t<=total*2.5)return 2;
   return 1;
 }
- 
-// ══════════════════════════════════════════
-// SHARED RESULTS HELPERS
-// ══════════════════════════════════════════
- 
-function setMsg(stars, mode) {
-  var msgs={
-    blitz: [['Keep going \u2014 every drill makes you faster!','Shake it off and try again!'],
-            ['Good effort! Focus on accuracy for more points.','One star \u2014 keep drilling!'],
-            ['Nice! Speed it up a bit for 3 stars.','Two stars! Push for that record.'],
-            ['Outstanding! You crushed it! \ud83d\udd25','Three stars! Math machine! \u26a1']],
-    master:[['Completed! Keep practicing to go faster.','You finished! Now go faster next time.'],
+
+// ════════════════════════════════════
+// RESULTS HELPERS
+// ════════════════════════════════════
+function setMsg(stars,mode){
+  var m={
+    blitz:[['Keep going \u2014 every drill makes you faster!','Shake it off and try again!'],
+           ['Good effort! Focus on accuracy for more points.','One star \u2014 keep drilling!'],
+           ['Nice! Push a little faster for 3 stars.','Two stars! Push for that record.'],
+           ['Outstanding! You crushed it! \ud83d\udd25','Three stars! Math machine! \u26a1']],
+    master:[['Finished! Keep practicing to go faster.','You finished! Now go faster next time.'],
             ['Solid! Fewer misses = better time.','Getting there \u2014 aim for zero misses!'],
             ['Great time! One more push for 3 stars.','Almost perfect \u2014 so close!'],
-            ['Flawless! Zero misses, fastest time! \ud83d\udd25','Perfect run! You mastered it! \u26a1']]
+            ['Flawless run! \ud83d\udd25','Perfect! You mastered it! \u26a1']]
   };
-  var pool=msgs[mode][stars];
-  document.getElementById('res-msg').textContent=pool[randInt(0,pool.length-1)];
+  var pool=m[mode][stars];setText('res-msg',pool[ri(0,pool.length-1)]);
 }
- 
-function animStars(stars) {
-  document.getElementById('star1').className='big-star';
-  document.getElementById('star2').className='big-star';
-  document.getElementById('star3').className='big-star';
-  if (stars>=1) setTimeout(function(){ document.getElementById('star1').className='big-star lit bounce'; },300);
-  if (stars>=2) setTimeout(function(){ document.getElementById('star2').className='big-star lit bounce'; },650);
-  if (stars>=3) setTimeout(function(){ document.getElementById('star3').className='big-star lit bounce'; },1000);
+function animStars(stars){
+  el('star1').className='big-star';el('star2').className='big-star';el('star3').className='big-star';
+  if(stars>=1)setTimeout(function(){el('star1').className='big-star lit bounce';},300);
+  if(stars>=2)setTimeout(function(){el('star2').className='big-star lit bounce';},650);
+  if(stars>=3)setTimeout(function(){el('star3').className='big-star lit bounce';},1000);
 }
- 
-// ══════════════════════════════════════════
-// DOM HELPERS
-// ══════════════════════════════════════════
- 
-function show(id){ var el=document.getElementById(id); if(el) el.style.display=''; }
-function hide(id){ var el=document.getElementById(id); if(el) el.style.display='none'; }
-function setTextSafe(id,val){ var el=document.getElementById(id); if(el) el.textContent=val; }
- 
-// ══════════════════════════════════════════
-// SUBMIT ROUTER + BUTTON WIRING
-// ══════════════════════════════════════════
- 
-function submitAnswer() {
-  if (selMode==='blitz') submitBlitz();
+
+// ════════════════════════════════════
+// SUBMIT ROUTER
+// ════════════════════════════════════
+function submitAnswer(){
+  if(selMode==='blitz')submitBlitz();
   else submitMaster();
 }
- 
-document.getElementById('op-back').addEventListener('click',   function(){ showScreen('grade-screen'); });
-document.getElementById('mode-back').addEventListener('click',  function(){ showScreen('op-screen'); });
-document.getElementById('set-back').addEventListener('click',   function(){ showScreen('mode-screen'); });
-document.getElementById('game-back').addEventListener('click',  function(){
-  clearInterval(blitzHandle); blitzHandle=null;
-  clearInterval(masterHandle); masterHandle=null;
-  masterRunning=false;
+el('go-btn').addEventListener('click',submitAnswer);
+
+// ════════════════════════════════════
+// NAV BUTTONS
+// ════════════════════════════════════
+el('op-back').addEventListener('click',function(){showScreen('grade-screen');});
+el('mode-back').addEventListener('click',function(){showScreen('op-screen');});
+el('set-back').addEventListener('click',function(){showScreen('mode-screen');});
+el('game-back').addEventListener('click',function(){
+  clearInterval(bHandle);bHandle=null;clearInterval(mHandle);mHandle=null;mRunning=false;
   showScreen(selMode==='master'?'set-screen':'mode-screen');
 });
-document.getElementById('go-btn').addEventListener('click', submitAnswer);
- 
-document.getElementById('again-btn').addEventListener('click', function(){
-  if (selMode==='blitz') startBlitz(); else startMaster();
-});
-document.getElementById('change-set-btn').addEventListener('click',  function(){ showScreen('set-screen'); });
-document.getElementById('change-mode-btn').addEventListener('click', function(){ showScreen('mode-screen'); });
-document.getElementById('change-grade-btn').addEventListener('click',function(){ showScreen('grade-screen'); });
- 
-document.querySelector('.numpad').addEventListener('click', function(e){
-  var btn=e.target.closest('.np'); if(!btn) return;
-  var n=btn.getAttribute('data-n');
-  var inp=document.getElementById('ans-input');
-  if (n==='del') inp.value=inp.value.slice(0,-1);
-  else if (n==='neg') { if(inp.value.charAt(0)!=='-') inp.value='-'+inp.value; }
-  else inp.value=inp.value+n;
-  inp.focus();
-});
- 
-document.addEventListener('keydown', function(e){
-  if (document.getElementById('game-screen').classList.contains('active') && e.key==='Enter') submitAnswer();
-});
- 
-// ══════════════════════════════════════════
+el('again-btn').addEventListener('click',function(){if(selMode==='blitz')startBlitz();else startMaster();});
+el('change-set-btn').addEventListener('click',function(){showScreen('set-screen');});
+el('change-mode-btn').addEventListener('click',function(){showScreen('mode-screen');});
+el('change-grade-btn').addEventListener('click',function(){showScreen('grade-screen');});
+
+// ════════════════════════════════════
 // INIT
-// ══════════════════════════════════════════
+// ════════════════════════════════════
 renderGrades();
 </script>
 </body>

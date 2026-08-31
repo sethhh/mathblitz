@@ -965,27 +965,17 @@ function selectKid(name) {
 // LOG RESULT TO GOOGLE SHEETS
 // ════════════════════════════════════
 function logResult(data) {
-  if (!SHEETS_URL) return; // silently skip if not configured
+  if (!SHEETS_URL) return;
   data.kid = currentKid;
-  // Use sendBeacon for fire-and-forget (doesn't block the UI)
-  // Falls back to fetch if unavailable
-  var payload = JSON.stringify(data);
-  try {
-    if (navigator.sendBeacon) {
-      var blob = new Blob([payload], {type:'application/json'});
-      navigator.sendBeacon(SHEETS_URL, blob);
-    } else {
-      fetch(SHEETS_URL, {
-        method:'POST',
-        mode:'no-cors',
-        headers:{'Content-Type':'application/json'},
-        body: payload
-      });
-    }
-  } catch(e) {
-    // Never crash the game over a logging failure
+  // Use GET with query params — avoids CORS preflight issues with Apps Script
+  var params = Object.keys(data).map(function(k) {
+    return encodeURIComponent(k) + '=' + encodeURIComponent(data[k]);
+  }).join('&');
+  var url = SHEETS_URL + '?' + params;
+  // Use no-cors fetch — we don't need the response, just fire and forget
+  fetch(url, {method:'GET', mode:'no-cors'}).catch(function(e) {
     console.warn('MathBlitz: could not log result', e);
-  }
+  });
 }
 
 // ════════════════════════════════════

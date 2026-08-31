@@ -41,6 +41,31 @@ body{
 }
 .fs-btn:hover{background:white;}
 
+/* ══ KID SELECTOR ══ */
+#kid-screen{
+  background:linear-gradient(160deg,#1E3A8A 0%,#3B82F6 55%,#60A5FA 100%);
+  align-items:center;justify-content:center;padding:2rem 1rem;
+}
+.kid-hero{text-align:center;color:white;margin-bottom:2.5rem;}
+.kid-hero h1{font-size:clamp(2.6rem,9vw,4.5rem);font-weight:900;line-height:1;text-shadow:0 4px 16px rgba(0,0,0,0.2);}
+.kid-hero h1 span{color:#FDE68A;}
+.kid-hero p{font-size:1.1rem;opacity:0.85;margin-top:0.5rem;}
+.kid-grid{display:flex;gap:1.25rem;flex-wrap:wrap;justify-content:center;}
+.kid-card{
+  background:white;border-radius:24px;padding:2.5rem 2rem;
+  cursor:pointer;box-shadow:var(--shadow-lg);border:3px solid transparent;
+  text-align:center;transition:transform 0.15s,box-shadow 0.15s,border-color 0.15s;
+  min-width:150px;flex:1;max-width:200px;
+}
+.kid-card:hover{transform:translateY(-4px);box-shadow:0 12px 48px rgba(0,0,0,0.18);}
+.kid-card:active{transform:scale(0.96);}
+.kid-card.becca:hover{border-color:#F9A8D4;}
+.kid-card.caleb:hover{border-color:#93C5FD;}
+.kid-avatar{font-size:4rem;margin-bottom:0.75rem;}
+.kid-name{font-weight:900;font-size:1.5rem;color:var(--text);}
+.kid-card.becca .kid-name{color:#9D174D;}
+.kid-card.caleb .kid-name{color:#1E40AF;}
+
 /* ══ GRADE SCREEN ══ */
 #grade-screen{
   background:linear-gradient(160deg,#1E3A8A 0%,#3B82F6 55%,#60A5FA 100%);
@@ -269,13 +294,32 @@ body{
 </head>
 <body>
 
-<button class="fs-btn" id="fs-btn" title="Fullscreen">&#x26F6;</button>
+<button class="fs-btn" id="fs-btn" title="Fullscreen (or press F)">&#x26F6;</button>
+
+<!-- ══ 0. KID SELECTOR ══ -->
+<div id="kid-screen" class="screen active">
+  <div class="kid-hero">
+    <h1>Math<span>Blitz</span> &#9889;</h1>
+    <p>Who's playing?</p>
+  </div>
+  <div class="kid-grid">
+    <div class="kid-card becca" onclick="selectKid('Becca')">
+      <div class="kid-avatar">&#x1F469;</div>
+      <div class="kid-name">Becca</div>
+    </div>
+    <div class="kid-card caleb" onclick="selectKid('Caleb')">
+      <div class="kid-avatar">&#x1F466;</div>
+      <div class="kid-name">Caleb</div>
+    </div>
+  </div>
+</div>
 
 <!-- ══ 1. GRADE ══ -->
-<div id="grade-screen" class="screen active">
+<div id="grade-screen" class="screen">
   <div class="hero">
     <h1>Math<span>Blitz</span> &#9889;</h1>
-    <p>Pick your grade to get started</p>
+    <p id="grade-hero-sub">Pick your grade to get started</p>
+    <button onclick="showScreen('kid-screen')" style="margin-top:0.75rem;background:rgba(255,255,255,0.2);border:1.5px solid rgba(255,255,255,0.4);color:white;border-radius:99px;padding:5px 16px;font-family:'Nunito',sans-serif;font-weight:700;font-size:0.85rem;cursor:pointer;">&#8592; Switch player</button>
   </div>
   <div class="grade-grid" id="grade-grid"></div>
 </div>
@@ -466,23 +510,35 @@ function starsHTML(n){
 // ════════════════════════════════════
 // FULLSCREEN
 // ════════════════════════════════════
-el('fs-btn').addEventListener('click',function(){
-  var d=document,de=document.documentElement;
-  if(!d.fullscreenElement&&!d.webkitFullscreenElement){
-    if(de.requestFullscreen)de.requestFullscreen();
-    else if(de.webkitRequestFullscreen)de.webkitRequestFullscreen();
+function toggleFullscreen(){
+  var de=document.documentElement;
+  if(!document.fullscreenElement&&!document.webkitFullscreenElement){
+    if(de.requestFullscreen){de.requestFullscreen();}
+    else if(de.webkitRequestFullscreen){de.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);}
     el('fs-btn').textContent='\u2715';
   } else {
-    if(d.exitFullscreen)d.exitFullscreen();
-    else if(d.webkitExitFullscreen)d.webkitExitFullscreen();
+    if(document.exitFullscreen){document.exitFullscreen();}
+    else if(document.webkitExitFullscreen){document.webkitExitFullscreen();}
     el('fs-btn').innerHTML='&#x26F6;';
   }
-});
+}
+// Wire directly via onclick attribute on the element — guarantees user gesture chain
+el('fs-btn').onclick=toggleFullscreen;
+
 document.addEventListener('fullscreenchange',function(){
-  if(!document.fullscreenElement)el('fs-btn').innerHTML='&#x26F6;';
+  el('fs-btn').innerHTML=document.fullscreenElement?'\u2715':'&#x26F6;';
 });
 document.addEventListener('webkitfullscreenchange',function(){
-  if(!document.webkitFullscreenElement)el('fs-btn').innerHTML='&#x26F6;';
+  el('fs-btn').innerHTML=document.webkitFullscreenElement?'\u2715':'&#x26F6;';
+});
+// F key as keyboard shortcut (desktop)
+document.addEventListener('keydown',function(e){
+  if(e.key==='f'||e.key==='F'){
+    // only if not typing in a focused input
+    if(document.activeElement===document.body||document.activeElement===document.documentElement){
+      toggleFullscreen();
+    }
+  }
 });
 
 // ════════════════════════════════════
@@ -696,6 +752,19 @@ function endBlitz(){
   var tot=bRight+bWrong,acc=tot>0?Math.round(bRight/tot*100):0;
   var stars=calcBlitzStars(bScore);
   var isNew=recordPR('blitz_'+selOp.id,bScore,stars);
+  logResult({
+    mode:'Blitz',
+    grade:selGrade.name,
+    operation:selOp.name,
+    set:'',
+    score:bScore,
+    correct:bRight,
+    wrong:bWrong,
+    bestStreak:bBest,
+    stars:stars,
+    isNewRecord:isNew,
+    durationSecs:60
+  });
   renderOps();
   el('res-tag').className='res-tag tag-rb';el('res-tag').textContent='BLITZ';
   el('res-context').textContent=selOp.name+' \u2014 '+selGrade.name;
@@ -790,6 +859,19 @@ function endMaster(){
   var isNew=old===0||tenths<old;
   var stars=calcMasterStars(finalTime,mMisses,mTotal);
   if(isNew){var s2=store();s2['pr_master_'+selSet.key]=tenths;if(stars>(s2['st_master_'+selSet.key]||0))s2['st_master_'+selSet.key]=stars;saveStore(s2);}
+  logResult({
+    mode:'Master It',
+    grade:selGrade.name,
+    operation:selOp.name,
+    set:selSet.label,
+    score:'',
+    correct:mDone,
+    wrong:mMisses,
+    bestStreak:mBest,
+    stars:stars,
+    isNewRecord:isNew,
+    durationSecs:Math.round(finalTime*10)/10
+  });
   renderSets();
   el('res-tag').className='res-tag tag-rm';el('res-tag').textContent='MASTER IT';
   el('res-context').textContent=selOp.name+' '+selSet.label+' \u2014 '+selGrade.name;
@@ -858,6 +940,53 @@ el('again-btn').addEventListener('click',function(){if(selMode==='blitz')startBl
 el('change-set-btn').addEventListener('click',function(){showScreen('set-screen');});
 el('change-mode-btn').addEventListener('click',function(){showScreen('mode-screen');});
 el('change-grade-btn').addEventListener('click',function(){showScreen('grade-screen');});
+
+// ════════════════════════════════════
+// GOOGLE SHEETS CONFIG
+// ════════════════════════════════════
+// Paste your Web App URL here after following setup instructions:
+var SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzKTkAFox0Z3xOvXjj0ZDLt9MsUmPfvYEOnInXk4N7npqRMaFoavmqDnw8UWHhotVhvAA/exec';
+// Example: var SHEETS_URL = 'https://script.google.com/macros/s/ABC123.../exec';
+
+// ════════════════════════════════════
+// KID SELECTOR
+// ════════════════════════════════════
+var currentKid = '';
+
+function selectKid(name) {
+  currentKid = name;
+  var sub = document.getElementById('grade-hero-sub');
+  if (sub) sub.textContent = "Hi " + name + "! Pick your grade.";
+  renderGrades();
+  showScreen('grade-screen');
+}
+
+// ════════════════════════════════════
+// LOG RESULT TO GOOGLE SHEETS
+// ════════════════════════════════════
+function logResult(data) {
+  if (!SHEETS_URL) return; // silently skip if not configured
+  data.kid = currentKid;
+  // Use sendBeacon for fire-and-forget (doesn't block the UI)
+  // Falls back to fetch if unavailable
+  var payload = JSON.stringify(data);
+  try {
+    if (navigator.sendBeacon) {
+      var blob = new Blob([payload], {type:'application/json'});
+      navigator.sendBeacon(SHEETS_URL, blob);
+    } else {
+      fetch(SHEETS_URL, {
+        method:'POST',
+        mode:'no-cors',
+        headers:{'Content-Type':'application/json'},
+        body: payload
+      });
+    }
+  } catch(e) {
+    // Never crash the game over a logging failure
+    console.warn('MathBlitz: could not log result', e);
+  }
+}
 
 // ════════════════════════════════════
 // INIT
